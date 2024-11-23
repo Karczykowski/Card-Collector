@@ -1,0 +1,69 @@
+"""Module containing card service abstractions."""
+
+from abc import ABC, abstractmethod
+from typing import Iterable
+
+from card_collector.core.domains.card import Card, CardIn
+
+
+class ICardService(ABC):
+    """A class representing card repository."""
+
+    @abstractmethod
+    async def get_all(self) -> Iterable[Card]:
+        """The method getting all cards from the repository.
+
+        Returns:
+            Iterable[Card]: All cards.
+        """
+
+
+    @abstractmethod
+    async def get_by_id(self, card_id: int) -> Card | None:
+        """The method getting card by provided id.
+
+        Args:
+            card_id (int): The id of the card.
+
+        Returns:
+            Card | None: The card details.
+        """
+
+
+    @abstractmethod
+    async def add_card(self, data: CardIn) -> Card | None:
+        """The method adding new card to the data storage.
+
+        Args:
+            data (CardIn): The details of the new card.
+
+        Returns:
+            Card | None: Full details of the newly added card.
+        """
+
+    @abstractmethod
+    async def update_card(
+            self,
+            card_id: int,
+            data: CardIn,
+    ) -> Card | None:
+        """The method updating card data in the data storage.
+
+        Args:
+            card_id (int): The id of the card.
+            data (CardIn): The details of the updated card.
+
+        Returns:
+            Card | None: The updated card details.
+        """
+
+    @abstractmethod
+    async def delete_card(self, card_id: int) -> bool:
+        """The method updating removing card from the data storage.
+
+        Args:
+            card_id (int): The id of the card.
+
+        Returns:
+            bool: Success of the operation.
+        """
