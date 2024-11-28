@@ -31,7 +31,6 @@ async def create_card(
 
     return new_card.model_dump() if new_card else {}
 
-
 @router.get("/all", response_model=Iterable[Card], status_code=200)
 @inject
 async def get_all_cards(
@@ -52,11 +51,7 @@ async def get_all_cards(
 
 
 
-@router.get(
-    "/{card_id}",
-    response_model=Card,
-    status_code=200,
-)
+@router.get("/{card_id}",response_model=Card,status_code=200,)
 @inject
 async def get_card_by_id(
         card_id: int,
