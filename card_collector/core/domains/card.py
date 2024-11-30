@@ -17,20 +17,20 @@ class Card(CardIn):
 
     model_config = ConfigDict(from_attributes=True, extra="ignore")
 
-@classmethod
-def from_record(cls, record: Record) -> "Card":
-    """A method for preparing DTO instance based on DB record.
+    @classmethod
+    def from_record(cls, record: Record) -> "Card":
+        """A method for preparing DTO instance based on DB record.
 
-    Args:
-        record (Record): The DB record.
+        Args:
+            record (Record): The DB record.
 
-    Returns:
-        CardDTO: The final DTO instance.
-    """
-    record_dict = dict(record)
+        Returns:
+            CardDTO: The final DTO instance.
+        """
+        record_dict = dict(record)
 
-    return cls(
-        id=record_dict.get("id"),  # type: ignore
-        name=record_dict.get("name"),  # type: ignore
-        rarity_id=record_dict("rarity_id"), # type: ignore
-    )
+        return cls(
+            id=record_dict.get("id"),  # type: ignore
+            name=record_dict.get("name"),  # type: ignore
+            rarity_id=record_dict.get("rarity_id"), # type: ignore
+        )

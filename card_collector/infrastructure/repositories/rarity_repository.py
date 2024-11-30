@@ -40,7 +40,9 @@ class RarityRepository(IRarityRepository):
             Any | None: The rarity details.
         """
 
-        return await self._get_by_id(rarity_id)
+        rarity = await self._get_by_id(rarity_id)
+
+        return Rarity.from_record(rarity) if rarity else None
 
     async def add_rarity(self, data: RarityIn) -> Any | None:
         """The method adding new rarity to the data storage.

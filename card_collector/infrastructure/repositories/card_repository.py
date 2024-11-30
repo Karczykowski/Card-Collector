@@ -40,7 +40,9 @@ class CardRepository(ICardRepository):
             Any | None: The card details.
         """
 
-        return await self._get_by_id(card_id)
+        card = await self._get_by_id(card_id)
+
+        return Card.from_record(card) if card else None
 
     async def add_card(self, data: CardIn) -> Any | None:
         """The method adding new card to the data storage.

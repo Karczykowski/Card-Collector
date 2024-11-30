@@ -29,6 +29,8 @@ async def create_card(
 
     new_card = await service.add_card(card)
 
+    print(f"****************: {new_card}", flush=True)
+
     return new_card.model_dump() if new_card else {}
 
 @router.get("/all", response_model=Iterable[Card], status_code=200)

@@ -14,7 +14,8 @@ class Container(DeclarativeContainer):
 
     card_service = Factory(
         CardService,
-        repository=card_repository,
+        card_repository=card_repository,
+        rarity_repository=rarity_repository,
     )
 
     rarity_service = Factory(
