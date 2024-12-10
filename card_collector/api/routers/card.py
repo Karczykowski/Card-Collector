@@ -29,8 +29,6 @@ async def create_card(
 
     new_card = await service.add_card(card)
 
-    print(f"****************: {new_card}", flush=True)
-
     return new_card.model_dump() if new_card else {}
 
 @router.get("/all", response_model=Iterable[Card], status_code=200)
@@ -74,32 +72,6 @@ async def get_card_by_id(
 
     raise HTTPException(status_code=404, detail="Card not found")
 
-
-@router.get(
-    "/user/{user_id}",
-    response_model=Iterable[Card],
-    status_code=200,
-)
-@inject
-async def get_cards_by_user(
-        user_id: int,
-        service: ICardService = Depends(Provide[Container.card_service]),
-) -> Iterable:
-    """An endpoint for getting cards by user who added them.
-
-    Args:
-        user_id (int): The id of the user.
-        service (ICardService, optional): The injected service dependency.
-
-    Returns:
-        Iterable: The card details collection.
-    """
-
-    cards = await service.get_by_user(user_id)
-
-    return cards
-
-
 @router.put("/{card_id}", response_model=Card, status_code=201)
 @inject
 async def update_card(
@@ -141,7 +113,7 @@ async def delete_card(
 
     Args:
         card_id (int): The id of the card.
-        service (IcontinentService, optional): The injected service dependency.
+        service (ICardService, optional): The injected service dependency.
 
     Raises:
         HTTPException: 404 if card does not exist.

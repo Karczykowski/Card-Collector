@@ -4,21 +4,31 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Singleton
 
 from card_collector.infrastructure.repositories.card_repository import CardRepository
-from card_collector.infrastructure.repositories.rarity_repository import RarityRepository
 from card_collector.infrastructure.services.card_service import CardService
-from card_collector.infrastructure.services.rarity_service import RarityService
+
+from card_collector.infrastructure.repositories.profile_repository import ProfileRepository
+from card_collector.infrastructure.services.profile_service import ProfileService
+
+from card_collector.infrastructure.repositories.profile_collection_repository import ProfileCollectionRepository
+from card_collector.infrastructure.services.profile_collection_service import ProfileCollectionService
+
 class Container(DeclarativeContainer):
     """Container class for dependency injecting purposes."""
     card_repository = Singleton(CardRepository)
-    rarity_repository = Singleton(RarityRepository)
+    profile_repository = Singleton(ProfileRepository)
+    profile_collection_repository = Singleton(ProfileCollectionRepository)
 
     card_service = Factory(
         CardService,
-        card_repository=card_repository,
-        rarity_repository=rarity_repository,
+        repository=card_repository,
     )
 
-    rarity_service = Factory(
-        RarityService,
-        repository=rarity_repository,
+    profile_service = Factory(
+        ProfileService,
+        repository=profile_repository,
+    )
+
+    profile_collection_service = Factory(
+        ProfileCollectionService,
+        repository=profile_collection_repository
     )

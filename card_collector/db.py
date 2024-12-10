@@ -15,19 +15,27 @@ from card_collector.config import config
 
 metadata = sqlalchemy.MetaData()
 
-rarity_table = sqlalchemy.Table(
-    "rarities",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String),
-)
-
 card_table = sqlalchemy.Table(
     "card",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("name", sqlalchemy.String),
-    sqlalchemy.Column("rarity_id", sqlalchemy.ForeignKey("rarities.id"), nullable = False),
+    sqlalchemy.Column("rarity_id", sqlalchemy.Integer),
+)
+
+profile_table = sqlalchemy.Table(
+    "profile",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("name", sqlalchemy.String),
+)
+
+profile_collection_table = sqlalchemy.Table(
+    "profile_collection",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("profile_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('profile.id')),
+    sqlalchemy.Column("card_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id')),
 )
 
 db_uri = (
