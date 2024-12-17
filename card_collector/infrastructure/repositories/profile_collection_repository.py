@@ -130,3 +130,4 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
         )
 
         return await database.fetch_one(query)
+
