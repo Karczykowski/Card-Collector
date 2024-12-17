@@ -11,12 +11,14 @@ from card_collector.api.routers.profile_collection import router as profile_coll
 from card_collector.container import Container
 from card_collector.db import database
 from card_collector.db import init_db
+from card_collector.utils import setup
 
 container = Container()
 container.wire(modules=[
     "card_collector.api.routers.card",
     "card_collector.api.routers.profile",
-    "card_collector.api.routers.profile_collection"
+    "card_collector.api.routers.profile_collection",
+    "card_collector.utils.setup"
 ])
 
 
@@ -25,6 +27,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator:
     """Lifespan function working on app startup."""
     await init_db()
     await database.connect()
+    await setup.main()
     yield
     await database.disconnect()
 

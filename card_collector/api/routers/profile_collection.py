@@ -10,7 +10,6 @@ from card_collector.core.services.i_profile_collection_service import IProfileCo
 from card_collector.core.repositories.i_card_repository import ICardRepository
 from card_collector.core.repositories.i_profile_repository import IProfileRepository
 
-
 router = APIRouter()
 
 @router.post("/create", response_model=ProfileCollection, status_code=201)
@@ -63,37 +62,30 @@ async def get_profile_collection_by_id(
     if profile_collection := await service.get_by_id(profile_collection_id):
         return profile_collection.model_dump()
 
-    raise HTTPException(status_code=404, detail="ProfileCollection not found")
+    raise HTTPException(status_code=404, detail="Profile Collection not found")
 
 @router.put("/{profile_collection_id}", response_model=ProfileCollection, status_code=201)
 @inject
 async def update_profile_collection(
         profile_collection_id: int,
         updated_profile_collection: ProfileCollectionIn,
+        card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
+        profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> dict:
-    """An endpoint for updating profile_collection data.
 
-    Args:
-        profile_collection_id (int): The id of the profile_collection.
-        updated_profile_collection (ProfileCollectionIn): The updated profile_collection details.
-        service (IProfileCollectiontService, optional): The injected service dependency.
+    if await card_repository.get_by_id(updated_profile_collection.card_id):
+        if await profile_repository.get_by_id(updated_profile_collection.profile_id):
+            if await service.get_by_id(profile_collection_id=profile_collection_id):
+                await service.update_profile_collection(
+                    profile_collection_id=profile_collection_id,
+                    data=updated_profile_collection,
+                )
+                return {**updated_profile_collection.model_dump(), "id": profile_collection_id}
 
-    Raises:
-        HTTPException: 404 if profile_collection does not exist.
-
-    Returns:
-        dict: The updated profile_collection details.
-    """
-
-    if await service.get_by_id(profile_collection_id=profile_collection_id):
-        await service.update_profile_collection(
-            profile_collection_id=profile_collection_id,
-            data=updated_profile_collection,
-        )
-        return {**updated_profile_collection.model_dump(), "id": profile_collection_id}
-
-    raise HTTPException(status_code=404, detail="ProfileCollection not found")
+            raise HTTPException(status_code=404, detail="Profile Collection not found")
+        raise HTTPException(status_code=404, detail="Profile not found")
+    raise HTTPException(status_code=404, detail="Card not found")
 
 
 @router.delete("/{profile_collection_id}", status_code=204)
@@ -117,4 +109,4 @@ async def delete_profile_collection(
 
         return
 
-    raise HTTPException(status_code=404, detail="ProfileCollection not found")
+    raise HTTPException(status_code=404, detail="Profile Collection not found")

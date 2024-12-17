@@ -26,7 +26,6 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
 
         query = (
             select(profile_collection_table)
-            .order_by(profile_collection_table.c.name.asc())
         )
         profile_collections = await database.fetch_all(query)
 
