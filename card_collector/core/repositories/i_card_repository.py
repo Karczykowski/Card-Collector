@@ -18,6 +18,14 @@ class ICardRepository(ABC):
         """
 
     @abstractmethod
+    async def get_all_by_rarity(self, rarity_id: int) -> Iterable[Any]:
+        """The abstract getting all cards with a given rarity from the data storage.
+
+        Returns:
+            Iterable[Any]: Cards in the data storage.
+        """
+
+    @abstractmethod
     async def get_by_id(self, card_id: int) -> Any | None:
         """The abstract getting card by provided id.
 

@@ -66,13 +66,6 @@ class IProfileRepository(ABC):
             bool: Success of the operation.
         """
 
-    @abstractmethod
-    async def open_pack(self, profile_id: int) -> bool:
-        """
-
-        """
-
-
 
 
 

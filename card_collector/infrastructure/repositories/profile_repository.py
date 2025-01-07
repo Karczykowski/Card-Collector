@@ -129,5 +129,3 @@ class ProfileRepository(IProfileRepository):
         )
 
         return await database.fetch_one(query)
-
-    async def open_pack(self, profile_id: int):

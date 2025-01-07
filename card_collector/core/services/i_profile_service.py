@@ -67,14 +67,3 @@ class IProfileService(ABC):
         Returns:
             bool: Success of the operation.
         """
-
-    @abstractmethod
-    async def open_pack(self, profile_collection_id: int) -> bool:
-        """The method for opening a pack of cards and adding it to collection.
-
-    Args:
-        profile_collection_id (int): The id of the profile_collection.
-
-    Returns:
-        bool: Success of the operation.
-    """

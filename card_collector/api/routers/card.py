@@ -49,6 +49,25 @@ async def get_all_cards(
 
     return cards
 
+@router.get("/all/{rarity_id}", response_model=Iterable[Card], status_code=200)
+@inject
+async def get_all_by_rarity(
+        rarity_id: int,
+        service: ICardService = Depends(Provide[Container.card_service]),
+) -> Iterable:
+    """An endpoint for getting all cards by a given rarity.
+
+    Args:
+        rarity_id (int): The id of the rarity
+        service (ICardService, optional): The injected service dependency.
+
+    Returns:
+        Iterable: The card attributes collection.
+    """
+
+    cards = await service.get_all_by_rarity(rarity_id)
+
+    return cards
 
 
 @router.get("/{card_id}",response_model=Card,status_code=200,)
@@ -125,3 +144,24 @@ async def delete_card(
         return
 
     raise HTTPException(status_code=404, detail="Card not found")
+
+@router.get("/random/{rarity_id}",response_model=Card,status_code=200,)
+@inject
+async def get_random_by_id(
+        rarity_id: int,
+        service: ICardService = Depends(Provide[Container.card_service]),
+) -> dict | None:
+    """An endpoint for getting random card by rarity id.
+
+    Args:
+        rarity_id (int): The id of the rarity.
+        service (ICardService, optional): The injected service dependency.
+
+    Returns:
+        dict | None: The card details.
+    """
+    if await get_all_by_rarity(rarity_id):
+        if card := await service.get_random_by_id(rarity_id):
+            return card.model_dump()
+
+    raise HTTPException(status_code=404, detail="Rarity not found")

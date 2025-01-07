@@ -67,3 +67,14 @@ class IProfileCollectionService(ABC):
         Returns:
             bool: Success of the operation.
         """
+
+    @abstractmethod
+    async def open_pack(self) -> Iterable:
+        """The method updating removing profile_collection from the data storage.
+
+        Args:
+            profile_collection_id (int): The id of the profile_collection.
+
+        Returns:
+            bool: Success of the operation.
+        """

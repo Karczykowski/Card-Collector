@@ -30,6 +30,23 @@ class CardRepository(ICardRepository):
 
         return [Card.from_record(card) for card in cards]
 
+    async def get_all_by_rarity(self, _rarity_id: int) -> Iterable[Any]:
+        """The method getting all cards from the data storage.
+
+        Returns:
+            Iterable[Any]: Cards in the data storage.
+        """
+
+        query = (
+            select(card_table)
+            .where(card_table.c.rarity_id == _rarity_id)
+            .order_by(card_table.c.name.asc())
+        )
+        cards = await database.fetch_all(query)
+
+        return [Card.from_record(card) for card in cards]
+
+
     async def get_by_id(self, card_id: int) -> Any | None:
         """The method getting card by provided id.
 

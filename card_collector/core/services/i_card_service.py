@@ -17,6 +17,12 @@ class ICardService(ABC):
             Iterable[Card]: All cards.
         """
 
+    async def get_all_by_rarity(self, rarity_id: int) -> Iterable[Card]:
+        """The method getting all cards by id from the repository.
+
+        Returns:
+            Iterable[Card]: All cards.
+        """
 
     @abstractmethod
     async def get_by_id(self, card_id: int) -> Card | None:
@@ -66,4 +72,15 @@ class ICardService(ABC):
 
         Returns:
             bool: Success of the operation.
+        """
+
+    @abstractmethod
+    async def get_random_by_id(self, rarity_id: int) -> Card:
+        """The method for generating a random card of a given rarity.
+
+        Args:
+            rarity_id (int): The id of rarity to generate.
+
+        Returns:
+            Card: generated card.
         """
