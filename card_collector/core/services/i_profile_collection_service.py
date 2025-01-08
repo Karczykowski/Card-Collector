@@ -29,6 +29,14 @@ class IProfileCollectionService(ABC):
             ProfileCollection | None: The profile_collection details.
         """
 
+    @abstractmethod
+    async def  get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[ProfileCollection]:
+        """The method getting all profile_collections with a given profile.
+
+        Returns:
+            Iterable[ProfileCollection]: All profile_collections with a given profile.
+        """
+
 
     @abstractmethod
     async def add_card_to_profile_collection(self, data: ProfileCollectionIn) -> ProfileCollection | None:
@@ -59,17 +67,6 @@ class IProfileCollectionService(ABC):
 
     @abstractmethod
     async def delete_profile_collection(self, profile_collection_id: int) -> bool:
-        """The method updating removing profile_collection from the data storage.
-
-        Args:
-            profile_collection_id (int): The id of the profile_collection.
-
-        Returns:
-            bool: Success of the operation.
-        """
-
-    @abstractmethod
-    async def open_pack(self) -> Iterable:
         """The method updating removing profile_collection from the data storage.
 
         Args:

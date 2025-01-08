@@ -31,6 +31,21 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
 
         return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
 
+    async def get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[Any]:
+        """The method getting all profile_collections from the data storage.
+
+        Returns:
+            Iterable[Any]: ProfileCollections in the data storage.
+        """
+
+        query = (
+            select(profile_collection_table)
+            .where(profile_collection_table.c.profile_id == profile_id)
+        )
+        profile_collections = await database.fetch_all(query)
+
+        return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
+
     async def get_by_id(self, profile_collection_id: int) -> Any | None:
         """The method getting profile_collection by provided id.
 

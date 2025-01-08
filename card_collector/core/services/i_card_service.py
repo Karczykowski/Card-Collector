@@ -1,7 +1,7 @@
 """Module containing card service abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import Iterable, List
 
 from card_collector.core.domains.card import Card, CardIn
 
@@ -75,11 +75,23 @@ class ICardService(ABC):
         """
 
     @abstractmethod
-    async def get_random_by_id(self, rarity_id: int) -> Card:
+    async def get_random_cards_by_rarity(self, amount: int, rarity_id: int) -> List[Card]:
         """The method for generating a random card of a given rarity.
 
         Args:
+            amount: amount of cards to generate.
             rarity_id (int): The id of rarity to generate.
+
+        Returns:
+            Card: generated card.
+        """
+
+    @abstractmethod
+    async def get_random_cards(self, amount: int) -> List[Card]:
+        """The method for generating random cards
+
+        Args:
+            amount (int): The number of cards to generate.
 
         Returns:
             Card: generated card.

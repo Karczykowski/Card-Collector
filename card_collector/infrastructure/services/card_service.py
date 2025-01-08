@@ -1,6 +1,6 @@
 """Module containing continent service implementation."""
 import random
-from typing import Iterable
+from typing import Iterable, List
 
 from card_collector.core.domains.card import Card, CardIn
 from card_collector.core.repositories.i_card_repository import ICardRepository
@@ -94,14 +94,35 @@ class CardService(ICardService):
 
         return await self._repository.delete_card(card_id)
 
-    async def get_random_by_id(self, rarity_id: int) -> Card:
+    async def get_random_cards_by_rarity(self, amount: int, rarity_id: int) -> List[Card]:
         """The method for generating a random card of a given rarity.
 
         Args:
+            amount: amount of cards to generate.
             rarity_id (int): The id of rarity to generate.
 
         Returns:
             Card: generated card.
         """
+        cards = []
 
-        return random.choice(list(await self._repository.get_all_by_rarity(rarity_id)))
+        for _ in range(amount):
+            cards.append(random.choice(list(await self.get_all_by_rarity(rarity_id))))
+
+        return cards
+
+    async def get_random_cards(self, amount: int) -> List[Card]:
+        """The method for generating random cards
+
+        Args:
+            amount (int): The number of cards to generate.
+
+        Returns:
+            Card: generated card.
+        """
+        cards = []
+
+        for _ in range(amount):
+            cards.append(random.choice(list(await self._repository.get_all_cards())))
+
+        return cards

@@ -41,6 +41,18 @@ class ProfileCollectionService(IProfileCollectionService):
 
         return await self._repository.get_by_id(profile_collection_id)
 
+    async def get_profile_collection_by_profile_id(self, profile_collection_id: int) -> Iterable[ProfileCollection] | None:
+        """The method getting profile_collection by provided id.
+
+        Args:
+            profile_collection_id (int): The id of the profile_collection.
+
+        Returns:
+            ProfileCollection | None: The profile_collection details.
+        """
+
+        return await self._repository.get_profile_collection_by_profile_id(profile_collection_id)
+
     async def add_card_to_profile_collection(self, data: ProfileCollectionIn) -> ProfileCollection | None:
         """The method adding new profile_collection to the data storage.
 

@@ -18,6 +18,14 @@ class IProfileCollectionRepository(ABC):
         """
 
     @abstractmethod
+    async def get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[Any]:
+        """The abstract getting all profile_collections from the data storage.
+
+        Returns:
+            Iterable[Any]: ProfileCollections in the data storage.
+        """
+
+    @abstractmethod
     async def get_by_id(self, profile_collection_id: int) -> Any | None:
         """The abstract getting profile_collection by provided id.
 

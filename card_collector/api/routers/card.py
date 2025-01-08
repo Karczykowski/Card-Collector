@@ -145,15 +145,17 @@ async def delete_card(
 
     raise HTTPException(status_code=404, detail="Card not found")
 
-@router.get("/random/{rarity_id}",response_model=Card,status_code=200,)
+@router.get("/random/{rarity_id}",response_model=Iterable[Card],status_code=200,)
 @inject
-async def get_random_by_id(
+async def get_random_cards_by_rarity(
+        amount: int,
         rarity_id: int,
         service: ICardService = Depends(Provide[Container.card_service]),
-) -> dict | None:
+) -> Iterable | None:
     """An endpoint for getting random card by rarity id.
 
     Args:
+        amount: amount of cards to generate
         rarity_id (int): The id of the rarity.
         service (ICardService, optional): The injected service dependency.
 
@@ -161,7 +163,23 @@ async def get_random_by_id(
         dict | None: The card details.
     """
     if await get_all_by_rarity(rarity_id):
-        if card := await service.get_random_by_id(rarity_id):
-            return card.model_dump()
+        return await service.get_random_cards_by_rarity(amount, rarity_id)
 
     raise HTTPException(status_code=404, detail="Rarity not found")
+
+@router.get("/random/",response_model=Iterable[Card],status_code=200,)
+@inject
+async def get_random_cards(
+        amount: int,
+        service: ICardService = Depends(Provide[Container.card_service]),
+) -> Iterable | None:
+    """An endpoint for getting random card.
+
+    Args:
+        amount: amount of cards to generate
+        service (ICardService, optional): The injected service dependency.
+
+    Returns:
+        Card | None: The card details.
+    """
+    return await service.get_random_cards(amount)

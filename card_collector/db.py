@@ -38,6 +38,14 @@ profile_collection_table = sqlalchemy.Table(
     sqlalchemy.Column("card_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id')),
 )
 
+trade_offer_table = sqlalchemy.Table(
+    "trade_offer",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("card_offered", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id')),
+    sqlalchemy.Column("card_wanted", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
+)
+
 db_uri = (
     f"postgresql+asyncpg://{config.DB_USER}:{config.DB_PASSWORD}"
     f"@{config.DB_HOST}/{config.DB_NAME}"

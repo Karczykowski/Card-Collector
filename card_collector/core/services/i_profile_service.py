@@ -1,9 +1,10 @@
 """Module containing profile service abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import Iterable, List
 
 from card_collector.core.domains.profile import Profile, ProfileIn
+from card_collector.core.domains.card import Card
 
 
 class IProfileService(ABC):
@@ -60,6 +61,17 @@ class IProfileService(ABC):
     @abstractmethod
     async def delete_profile(self, profile_id: int) -> bool:
         """The method updating removing profile from the data storage.
+
+        Args:
+            profile_id (int): The id of the profile.
+
+        Returns:
+            bool: Success of the operation.
+        """
+
+    @abstractmethod
+    async def open_pack(self, profile_id: int) -> List[Card]:
+        """The method for opening a pack of 5 cards and adding it to profile collection
 
         Args:
             profile_id (int): The id of the profile.

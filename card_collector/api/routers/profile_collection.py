@@ -41,6 +41,17 @@ async def get_all_profile_collections(
 
     return profile_collections
 
+@router.get("/all_by_id", response_model=Iterable[ProfileCollection], status_code=200)
+@inject
+async def get_profile_collection_by_profile_id(
+        profile_id: int,
+        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
+) -> Iterable:
+
+    profile_collections = await service.get_profile_collection_by_profile_id(profile_id)
+
+    return profile_collections
+
 
 
 @router.get("/{profile_collection_id}",response_model=ProfileCollection,status_code=200,)

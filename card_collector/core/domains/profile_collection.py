@@ -30,7 +30,7 @@ class ProfileCollection(ProfileCollectionIn):
         record_dict = dict(record)
 
         return cls(
-            id=record_dict.get("id"),  # type: ignore
+            id=record_dict.get("id"),
             profile_id=record_dict.get("profile_id"),  # type: ignore
             card_id=record_dict.get("card_id"), # type: ignore
         )
