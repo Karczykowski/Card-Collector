@@ -1,7 +1,7 @@
 """Module containing profile service abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from typing import List
 
 from card_collector.core.domains.profile import Profile, ProfileIn
 from card_collector.core.domains.card import Card
@@ -11,11 +11,11 @@ class IProfileService(ABC):
     """A class representing profile repository."""
 
     @abstractmethod
-    async def get_all(self) -> Iterable[Profile]:
+    async def get_all(self) -> List[Profile]:
         """The method getting all profiles from the repository.
 
         Returns:
-            Iterable[Profile]: All profiles.
+            List[Profile]: All profiles.
         """
 
 

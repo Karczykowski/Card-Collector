@@ -1,9 +1,9 @@
 """Module containing trade_offer repository implementation."""
 
-from typing import Any, Iterable
+from typing import Any, List
 
 from asyncpg import Record  # type: ignore
-from sqlalchemy import select, join
+from sqlalchemy import select, join, and_
 
 from card_collector.core.repositories.i_trade_offer_repository import ITradeOfferRepository
 from card_collector.core.domains.trade_offer import TradeOffer, TradeOfferIn
@@ -15,15 +15,51 @@ from card_collector.db import (
 class TradeOfferRepository(ITradeOfferRepository):
     """A class representing continent DB repository."""
 
-    async def get_all_trade_offers(self) -> Iterable[Any]:
+    async def get_all_trade_offers(self) -> List[Any]:
         """The method getting all trade_offers from the data storage.
 
         Returns:
-            Iterable[Any]: TradeOffers in the data storage.
+            List[Any]: TradeOffers in the data storage.
         """
 
         query = (
             select(trade_offer_table)
+        )
+        trade_offers = await database.fetch_all(query)
+
+        return [TradeOffer.from_record(trade_offer) for trade_offer in trade_offers]
+
+    async def get_all_by_card_offered(self, card_offered: int) -> List[Any]:
+        """The method getting all trade_offers from the data storage.
+
+        Args:
+            card_offered (int): the id of card_offered.
+
+        Returns:
+            List[Any]: TradeOffers in the data storage.
+        """
+
+        query = (
+            select(trade_offer_table)
+            .where(trade_offer_table.c.card_offered == card_offered)
+        )
+        trade_offers = await database.fetch_all(query)
+
+        return [TradeOffer.from_record(trade_offer) for trade_offer in trade_offers]
+
+    async def get_all_by_card_wanted(self, card_wanted: int) -> List[Any]:
+        """The method getting all trade_offers from the data storage.
+
+        Args:
+            card_wanted (int): the id of card_wanted.
+
+        Returns:
+            List[Any]: TradeOffers in the data storage.
+        """
+
+        query = (
+            select(trade_offer_table)
+            .where(trade_offer_table.c.card_wanted == card_wanted)
         )
         trade_offers = await database.fetch_all(query)
 
@@ -43,6 +79,29 @@ class TradeOfferRepository(ITradeOfferRepository):
         trade_offer = await self._get_by_id(trade_offer_id)
 
         return TradeOffer.from_record(trade_offer) if trade_offer else None
+
+    async def get_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> Any | None:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            profile_id (int): the id of profile.
+            card_offered_id (int): the id of card_offered.
+
+        Returns:
+            Any | None: The trade_offer details.
+        """
+
+        query = (
+            trade_offer_table.select()
+            .where(
+                and_(
+                    trade_offer_table.c.profile_posted == profile_id,
+                    trade_offer_table.c.card_offered == card_offered_id)
+            )
+        )
+        trade_offers = await database.fetch_all(query)
+
+        return [TradeOffer.from_record(trade_offer) for trade_offer in trade_offers]
 
     async def add_trade_offer(self, data: TradeOfferIn) -> Any | None:
         """The method adding new trade_offer to the data storage.
@@ -102,7 +161,7 @@ class TradeOfferRepository(ITradeOfferRepository):
             bool: Success of the operation.
         """
 
-        if self._get_by_id(trade_offer_id):
+        if await self._get_by_id(trade_offer_id):
             query = trade_offer_table \
                 .delete() \
                 .where(trade_offer_table.c.id == trade_offer_id)

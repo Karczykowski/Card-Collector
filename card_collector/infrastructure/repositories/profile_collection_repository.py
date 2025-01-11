@@ -1,9 +1,9 @@
 """Module containing profile_collection repository implementation."""
 
-from typing import Any, Iterable
+from typing import Any, List
 
 from asyncpg import Record  # type: ignore
-from sqlalchemy import select, join
+from sqlalchemy import select, join, and_
 
 from card_collector.core.repositories.i_profile_collection_repository import IProfileCollectionRepository
 from card_collector.core.domains.profile_collection import ProfileCollection, ProfileCollectionIn
@@ -17,11 +17,11 @@ from card_collector.db import (
 class ProfileCollectionRepository(IProfileCollectionRepository):
     """A class representing continent DB repository."""
 
-    async def get_all_profile_collections(self) -> Iterable[Any]:
+    async def get_all_profile_collections(self) -> List[Any]:
         """The method getting all profile_collections from the data storage.
 
         Returns:
-            Iterable[Any]: ProfileCollections in the data storage.
+            List[Any]: ProfileCollections in the data storage.
         """
 
         query = (
@@ -31,16 +31,65 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
 
         return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
 
-    async def get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[Any]:
-        """The method getting all profile_collections from the data storage.
+    async def get_all_by_card_id(self, card_id: int) -> List[Any]:
+        """The abstract getting all profile_collections from the data storage.
 
         Returns:
-            Iterable[Any]: ProfileCollections in the data storage.
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+        query = (
+            select(profile_collection_table)
+            .where(profile_collection_table.c.card_id == card_id)
+        )
+        profile_collections = await database.fetch_all(query)
+
+        return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
+
+    async def get_all_by_profile_id(self, profile_id: int) -> List[Any]:
+        """The abstract getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
         """
 
         query = (
             select(profile_collection_table)
             .where(profile_collection_table.c.profile_id == profile_id)
+        )
+        profile_collections = await database.fetch_all(query)
+
+        return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
+
+    async def get_profile_collection_by_profile_id(self, profile_id: int) -> List[Any]:
+        """The method getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+        query = (
+            select(profile_collection_table)
+            .where(profile_collection_table.c.profile_id == profile_id)
+        )
+        profile_collections = await database.fetch_all(query)
+
+        return [ProfileCollection.from_record(profile_collection) for profile_collection in profile_collections]
+
+    async def get_profile_collection_by_profile_id_and_card_id(self, card_id: int, profile_id: int) -> List[Any]:
+        """The method getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+        query = (
+            select(profile_collection_table)
+            .where(
+                and_(
+                    profile_collection_table.c.profile_id == profile_id,
+                    profile_collection_table.c.card_id == card_id)
+            )
         )
         profile_collections = await database.fetch_all(query)
 
@@ -119,7 +168,7 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
             bool: Success of the operation.
         """
 
-        if self._get_by_id(profile_collection_id):
+        if await self._get_by_id(profile_collection_id):
             query = profile_collection_table \
                 .delete() \
                 .where(profile_collection_table.c.id == profile_collection_id)

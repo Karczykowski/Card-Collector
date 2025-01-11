@@ -1,6 +1,6 @@
 """Module containing continent service implementation."""
 
-from typing import Iterable, List
+from typing import List, List
 
 from card_collector.core.domains.profile_collection import ProfileCollectionIn
 from card_collector.core.domains.profile import Profile, ProfileIn
@@ -27,11 +27,11 @@ class ProfileService(IProfileService):
         self._card_service = card_service
         self._profile_collection_service = profile_collection_service
 
-    async def get_all(self) -> Iterable[Profile]:
+    async def get_all(self) -> List[Profile]:
         """The method getting all profiles from the repository.
 
         Returns:
-            Iterable[Profile]: All profiles.
+            List[Profile]: All profiles.
         """
 
         return await self._repository.get_all_profiles()
@@ -89,7 +89,7 @@ class ProfileService(IProfileService):
         Returns:
             bool: Success of the operation.
         """
-
+        [await self._profile_collection_service.delete_profile_collection(profile_collection.id) for profile_collection in await self._profile_collection_service.get_all_by_profile_id(profile_id)]
         return await self._repository.delete_profile(profile_id)
 
     async def open_pack(self, profile_id: int) -> List[Card]:

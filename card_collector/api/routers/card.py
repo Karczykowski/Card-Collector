@@ -1,6 +1,6 @@
 """A module containing continent endpoints."""
 
-from typing import Iterable
+from typing import List
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -31,30 +31,30 @@ async def create_card(
 
     return new_card.model_dump() if new_card else {}
 
-@router.get("/all", response_model=Iterable[Card], status_code=200)
+@router.get("/all", response_model=List[Card], status_code=200)
 @inject
 async def get_all_cards(
         service: ICardService = Depends(Provide[Container.card_service]),
-) -> Iterable:
+) -> List:
     """An endpoint for getting all cards.
 
     Args:
         service (ICardService, optional): The injected service dependency.
 
     Returns:
-        Iterable: The card attributes collection.
+        List: The card attributes collection.
     """
 
     cards = await service.get_all()
 
     return cards
 
-@router.get("/all/{rarity_id}", response_model=Iterable[Card], status_code=200)
+@router.get("/all/{rarity_id}", response_model=List[Card], status_code=200)
 @inject
 async def get_all_by_rarity(
         rarity_id: int,
         service: ICardService = Depends(Provide[Container.card_service]),
-) -> Iterable:
+) -> List:
     """An endpoint for getting all cards by a given rarity.
 
     Args:
@@ -62,7 +62,7 @@ async def get_all_by_rarity(
         service (ICardService, optional): The injected service dependency.
 
     Returns:
-        Iterable: The card attributes collection.
+        List: The card attributes collection.
     """
 
     cards = await service.get_all_by_rarity(rarity_id)
@@ -145,13 +145,13 @@ async def delete_card(
 
     raise HTTPException(status_code=404, detail="Card not found")
 
-@router.get("/random/{rarity_id}",response_model=Iterable[Card],status_code=200,)
+@router.get("/random/{rarity_id}",response_model=List[Card],status_code=200,)
 @inject
 async def get_random_cards_by_rarity(
         amount: int,
         rarity_id: int,
         service: ICardService = Depends(Provide[Container.card_service]),
-) -> Iterable | None:
+) -> List | None:
     """An endpoint for getting random card by rarity id.
 
     Args:
@@ -167,12 +167,12 @@ async def get_random_cards_by_rarity(
 
     raise HTTPException(status_code=404, detail="Rarity not found")
 
-@router.get("/random/",response_model=Iterable[Card],status_code=200,)
+@router.get("/random/",response_model=List[Card],status_code=200,)
 @inject
 async def get_random_cards(
         amount: int,
         service: ICardService = Depends(Provide[Container.card_service]),
-) -> Iterable | None:
+) -> List | None:
     """An endpoint for getting random card.
 
     Args:

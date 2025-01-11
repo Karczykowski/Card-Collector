@@ -1,7 +1,7 @@
 """Module containing card repository abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from typing import Any, List
 
 from card_collector.core.domains.card import CardIn
 
@@ -10,19 +10,19 @@ class ICardRepository(ABC):
     """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
-    async def get_all_cards(self) -> Iterable[Any]:
+    async def get_all_cards(self) -> List[Any]:
         """The abstract getting all cards from the data storage.
 
         Returns:
-            Iterable[Any]: Cards in the data storage.
+            List[Any]: Cards in the data storage.
         """
 
     @abstractmethod
-    async def get_all_by_rarity(self, rarity_id: int) -> Iterable[Any]:
+    async def get_all_by_rarity(self, rarity_id: int) -> List[Any]:
         """The abstract getting all cards with a given rarity from the data storage.
 
         Returns:
-            Iterable[Any]: Cards in the data storage.
+            List[Any]: Cards in the data storage.
         """
 
     @abstractmethod

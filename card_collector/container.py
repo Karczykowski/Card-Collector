@@ -3,7 +3,7 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Singleton
 
-from card_collector.db import profile_collection_table
+from card_collector.db import profile_collection_table, trade_offer_table
 from card_collector.infrastructure.repositories.card_repository import CardRepository
 from card_collector.infrastructure.services.card_service import CardService
 
@@ -23,14 +23,23 @@ class Container(DeclarativeContainer):
     profile_collection_repository = Singleton(ProfileCollectionRepository)
     trade_offer_repository = Singleton(TradeOfferRepository)
 
-    card_service = Factory(
-        CardService,
-        repository=card_repository,
+
+
+    trade_offer_service = Factory(
+        TradeOfferService,
+        repository=trade_offer_repository,
     )
 
     profile_collection_service = Factory(
         ProfileCollectionService,
-        repository=profile_collection_repository
+        repository=profile_collection_repository,
+        trade_offer_service=trade_offer_service
+    )
+
+    card_service = Factory(
+        CardService,
+        repository=card_repository,
+        profile_collection_service=profile_collection_service
     )
 
     profile_service = Factory(
@@ -40,8 +49,7 @@ class Container(DeclarativeContainer):
         profile_collection_service=profile_collection_service
     )
 
-    trade_offer_service = Factory(
-        TradeOfferService,
-        repository=trade_offer_repository,
-    )
+
+
+
 

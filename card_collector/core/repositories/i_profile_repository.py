@@ -1,7 +1,7 @@
 """Module containing profile repository abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from typing import Any, List
 
 from card_collector.core.domains.profile import ProfileIn
 
@@ -10,11 +10,11 @@ class IProfileRepository(ABC):
     """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
-    async def get_all_profiles(self) -> Iterable[Any]:
+    async def get_all_profiles(self) -> List[Any]:
         """The abstract getting all profiles from the data storage.
 
         Returns:
-            Iterable[Any]: Profiles in the data storage.
+            List[Any]: Profiles in the data storage.
         """
 
     @abstractmethod

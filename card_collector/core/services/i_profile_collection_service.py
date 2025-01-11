@@ -1,7 +1,7 @@
 """Module containing profile_collection service abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import List
 
 from card_collector.core.domains.profile_collection import ProfileCollection, ProfileCollectionIn
 
@@ -10,13 +10,31 @@ class IProfileCollectionService(ABC):
     """A class representing profile_collection repository."""
 
     @abstractmethod
-    async def get_all(self) -> Iterable[ProfileCollection]:
+    async def get_all(self) -> List[ProfileCollection]:
         """The method getting all profile_collections from the repository.
 
         Returns:
-            Iterable[ProfileCollection]: All profile_collections.
+            List[ProfileCollection]: All profile_collections.
         """
 
+    @abstractmethod
+    async def get_all_by_card_id(self, card_id: int) -> List[ProfileCollection]:
+        """The method getting all profile_collections from the repository.
+
+        Args:
+            card_id (int): The id of card.
+        Returns:
+            List[ProfileCollection]: All profile_collections.
+        """
+
+    async def get_all_by_profile_id(self, profile_id: int) -> List[ProfileCollection]:
+        """The method getting all profile_collections from the repository.
+
+        Args:
+            profile_id (int): The id of card.
+        Returns:
+            List[ProfileCollection]: All profile_collections.
+        """
 
     @abstractmethod
     async def get_by_id(self, profile_collection_id: int) -> ProfileCollection | None:
@@ -30,12 +48,21 @@ class IProfileCollectionService(ABC):
         """
 
     @abstractmethod
-    async def  get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[ProfileCollection]:
+    async def  get_profile_collection_by_profile_id(self, profile_id: int) -> List[ProfileCollection]:
         """The method getting all profile_collections with a given profile.
 
         Returns:
-            Iterable[ProfileCollection]: All profile_collections with a given profile.
+            List[ProfileCollection]: All profile_collections with a given profile.
         """
+
+    @abstractmethod
+    async def  get_profile_collection_by_profile_id_and_card_id(self, profile_id: int, card_id: int) -> List[ProfileCollection]:
+        """The method getting all profile_collections with a given profile.
+
+        Returns:
+            List[ProfileCollection]: All profile_collections with a given profile.
+        """
+
 
 
     @abstractmethod

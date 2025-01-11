@@ -1,39 +1,42 @@
 """Module containing continent service implementation."""
 import random
-from typing import Iterable, List
+from typing import List
 
 from card_collector.core.domains.card import Card, CardIn
 from card_collector.core.repositories.i_card_repository import ICardRepository
 from card_collector.core.services.i_card_service import ICardService
+from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
 
 
 class CardService(ICardService):
     """A class implementing the card service."""
 
     _repository: ICardRepository
+    _profile_collection_service: IProfileCollectionService
 
-    def __init__(self, repository: ICardRepository) -> None:
+    def __init__(self, repository: ICardRepository, profile_collection_service: IProfileCollectionService) -> None:
         """The initializer of the `card service`.
 
         Args:
             repository (ICardRepository): The reference to the repository.
         """
         self._repository = repository
+        self._profile_collection_service = profile_collection_service
 
-    async def get_all(self) -> Iterable[Card]:
+    async def get_all(self) -> List[Card]:
         """The method getting all cards from the repository.
 
         Returns:
-            Iterable[Card]: All cards.
+            List[Card]: All cards.
         """
 
         return await self._repository.get_all_cards()
 
-    async def get_all_by_rarity(self, rarity_id: int) -> Iterable[Card]:
+    async def get_all_by_rarity(self, rarity_id: int) -> List[Card]:
         """The method getting all cards by id from the repository.
 
         Returns:
-            Iterable[Card]: All cards.
+            List[Card]: All cards.
         """
 
         return await self._repository.get_all_by_rarity(rarity_id)
@@ -92,6 +95,7 @@ class CardService(ICardService):
             bool: Success of the operation.
         """
 
+        [await self._profile_collection_service.delete_profile_collection(profile_collection.id) for profile_collection in await self._profile_collection_service.get_all_by_card_id(card_id)]
         return await self._repository.delete_card(card_id)
 
     async def get_random_cards_by_rarity(self, amount: int, rarity_id: int) -> List[Card]:

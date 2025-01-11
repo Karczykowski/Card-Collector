@@ -1,6 +1,6 @@
 """Module containing card repository implementation."""
 
-from typing import Any, Iterable
+from typing import Any, List
 
 from asyncpg import Record  # type: ignore
 from sqlalchemy import select, join
@@ -15,11 +15,11 @@ from card_collector.db import (
 class CardRepository(ICardRepository):
     """A class representing continent DB repository."""
 
-    async def get_all_cards(self) -> Iterable[Any]:
+    async def get_all_cards(self) -> List[Any]:
         """The method getting all cards from the data storage.
 
         Returns:
-            Iterable[Any]: Cards in the data storage.
+            List[Any]: Cards in the data storage.
         """
 
         query = (
@@ -30,11 +30,11 @@ class CardRepository(ICardRepository):
 
         return [Card.from_record(card) for card in cards]
 
-    async def get_all_by_rarity(self, _rarity_id: int) -> Iterable[Any]:
+    async def get_all_by_rarity(self, _rarity_id: int) -> List[Any]:
         """The method getting all cards from the data storage.
 
         Returns:
-            Iterable[Any]: Cards in the data storage.
+            List[Any]: Cards in the data storage.
         """
 
         query = (
@@ -119,7 +119,7 @@ class CardRepository(ICardRepository):
             bool: Success of the operation.
         """
 
-        if self._get_by_id(card_id):
+        if await self._get_by_id(card_id):
             query = card_table \
                 .delete() \
                 .where(card_table.c.id == card_id)

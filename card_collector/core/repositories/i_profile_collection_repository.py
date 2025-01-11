@@ -1,7 +1,7 @@
 """Module containing profile_collection repository abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from typing import Any, List
 
 from card_collector.core.domains.profile_collection import ProfileCollectionIn
 
@@ -10,19 +10,43 @@ class IProfileCollectionRepository(ABC):
     """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
-    async def get_all_profile_collections(self) -> Iterable[Any]:
+    async def get_all_profile_collections(self) -> List[Any]:
         """The abstract getting all profile_collections from the data storage.
 
         Returns:
-            Iterable[Any]: ProfileCollections in the data storage.
+            List[Any]: ProfileCollections in the data storage.
         """
 
     @abstractmethod
-    async def get_profile_collection_by_profile_id(self, profile_id: int) -> Iterable[Any]:
+    async def get_all_by_card_id(self, card_id: int) -> List[Any]:
         """The abstract getting all profile_collections from the data storage.
 
         Returns:
-            Iterable[Any]: ProfileCollections in the data storage.
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+    @abstractmethod
+    async def get_all_by_profile_id(self, profile_id: int) -> List[Any]:
+        """The abstract getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+    @abstractmethod
+    async def get_profile_collection_by_profile_id(self, profile_id: int) -> List[Any]:
+        """The abstract getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
+        """
+
+    @abstractmethod
+    async def get_profile_collection_by_profile_id_and_card_id(self, card_id, profile_id: int) -> List[Any]:
+        """The abstract getting all profile_collections from the data storage.
+
+        Returns:
+            List[Any]: ProfileCollections in the data storage.
         """
 
     @abstractmethod

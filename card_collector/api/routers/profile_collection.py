@@ -1,6 +1,6 @@
 """A module containing continent endpoints."""
 
-from typing import Iterable
+from typing import List
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -31,26 +31,39 @@ async def add_card_to_profile(
     raise HTTPException(status_code=404, detail="Card not found")
 
 
-@router.get("/all", response_model=Iterable[ProfileCollection], status_code=200)
+@router.get("/all", response_model=List[ProfileCollection], status_code=200)
 @inject
 async def get_all_profile_collections(
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
-) -> Iterable:
+) -> List:
 
     profile_collections = await service.get_all()
 
     return profile_collections
 
-@router.get("/all_by_id", response_model=Iterable[ProfileCollection], status_code=200)
+@router.get("/all_by_profile_id", response_model=List[ProfileCollection], status_code=200)
 @inject
 async def get_profile_collection_by_profile_id(
         profile_id: int,
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
-) -> Iterable:
+) -> List:
 
     profile_collections = await service.get_profile_collection_by_profile_id(profile_id)
 
     return profile_collections
+
+@router.get("/all_by_prof_and_card_id", response_model=List[ProfileCollection], status_code=200)
+@inject
+async def get_profile_collection_by_profile_id_and_card_id(
+        card_id: int,
+        profile_id: int,
+        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
+) -> List:
+
+    profile_collections = await service.get_profile_collection_by_profile_id_and_card_id(card_id, profile_id)
+
+    return profile_collections
+
 
 
 

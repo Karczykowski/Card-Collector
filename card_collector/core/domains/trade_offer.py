@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict
 
 class TradeOfferIn(BaseModel):
     """Model representing trade_offer's DTO attributes."""
+    profile_posted: int
     card_offered: int
     card_wanted: int
 
@@ -31,6 +32,7 @@ class TradeOffer(TradeOfferIn):
 
         return cls(
             id=record_dict.get("id"),  # type: ignore
+            profile_posted=record_dict.get("profile_posted"),  # type: ignore
             card_offered=record_dict.get("card_offered"),  # type: ignore
             card_wanted=record_dict.get("card_wanted"), # type: ignore
         )

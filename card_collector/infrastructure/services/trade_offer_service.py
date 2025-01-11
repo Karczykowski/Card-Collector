@@ -1,6 +1,6 @@
 """Module containing continent service implementation."""
 import random
-from typing import Iterable, List
+from typing import List
 
 from card_collector.core.domains.trade_offer import TradeOffer, TradeOfferIn
 from card_collector.core.repositories.i_trade_offer_repository import ITradeOfferRepository
@@ -20,14 +20,50 @@ class TradeOfferService(ITradeOfferService):
         """
         self._repository = repository
 
-    async def get_all(self) -> Iterable[TradeOffer]:
+    async def get_all(self) -> List[TradeOffer]:
         """The method getting all trade_offers from the repository.
 
         Returns:
-            Iterable[TradeOffer]: All trade_offers.
+            List[TradeOffer]: All trade_offers.
         """
 
         return await self._repository.get_all_trade_offers()
+
+    async def get_all_by_card_offered(self, card_offered: int) -> List[TradeOffer]:
+        """The method getting all trade_offers from the repository.
+
+        Args:
+            card_offered (int): the id of card_offered.
+
+        Returns:
+            List[TradeOffer]: All trade_offers.
+        """
+
+        return await self._repository.get_all_by_card_offered(card_offered)
+
+    async def get_all_by_card_wanted(self, card_wanted: int) -> List[TradeOffer]:
+        """The method getting all trade_offers from the repository.
+
+        Args:
+            card_wanted (int): the id of card_wanted.
+        Returns:
+            List[TradeOffer]: All trade_offers.
+        """
+
+        return await self._repository.get_all_by_card_wanted(card_wanted)
+
+    async def get_all_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> List[TradeOffer] | None:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            profile_id (int): the id of profile.
+            card_offered_id (int): the id of card_offered.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+        return await self._repository.get_by_profile_id_and_card_offered_id(profile_id, card_offered_id)
 
     async def get_by_id(self, trade_offer_id: int) -> TradeOffer | None:
         """The method getting trade_offer by provided id.
@@ -84,3 +120,16 @@ class TradeOfferService(ITradeOfferService):
         """
 
         return await self._repository.delete_trade_offer(trade_offer_id)
+
+    async def delete_trade_offer_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> List[bool]:
+        """The method updating removing trade_offer from the data storage.
+
+        Args:
+            profile_id (int): the id of profile.
+            card_offered_id (int): the id of card_offered.
+
+        Returns:
+            bool: Success of the operation.
+        """
+        trade_offers = await self.get_all_by_profile_id_and_card_offered_id(profile_id, card_offered_id)
+        return [await self._repository.delete_trade_offer(trade_offer.id) for trade_offer in trade_offers]

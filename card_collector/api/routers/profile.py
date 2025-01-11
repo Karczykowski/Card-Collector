@@ -1,6 +1,6 @@
 """A module containing continent endpoints."""
 
-from typing import Iterable, List
+from typing import List, List
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -32,18 +32,18 @@ async def create_profile(
 
     return new_profile.model_dump() if new_profile else {}
 
-@router.get("/all", response_model=Iterable[Profile], status_code=200)
+@router.get("/all", response_model=List[Profile], status_code=200)
 @inject
 async def get_all_profiles(
         service: IProfileService = Depends(Provide[Container.profile_service]),
-) -> Iterable:
+) -> List:
     """An endpoint for getting all profiles.
 
     Args:
         service (IProfileService, optional): The injected service dependency.
 
     Returns:
-        Iterable: The profile attributes collection.
+        List: The profile attributes collection.
     """
 
     profiles = await service.get_all()

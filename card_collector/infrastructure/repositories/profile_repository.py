@@ -1,6 +1,6 @@
 """Module containing profile repository implementation."""
 
-from typing import Any, Iterable
+from typing import Any, List
 
 from asyncpg import Record  # type: ignore
 from sqlalchemy import select, join
@@ -15,11 +15,11 @@ from card_collector.db import (
 class ProfileRepository(IProfileRepository):
     """A class representing continent DB repository."""
 
-    async def get_all_profiles(self) -> Iterable[Any]:
+    async def get_all_profiles(self) -> List[Any]:
         """The method getting all profiles from the data storage.
 
         Returns:
-            Iterable[Any]: Profiles in the data storage.
+            List[Any]: Profiles in the data storage.
         """
 
         query = (
@@ -102,7 +102,7 @@ class ProfileRepository(IProfileRepository):
             bool: Success of the operation.
         """
 
-        if self._get_by_id(profile_id):
+        if await self._get_by_id(profile_id):
             query = profile_table \
                 .delete() \
                 .where(profile_table.c.id == profile_id)

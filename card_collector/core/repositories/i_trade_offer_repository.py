@@ -1,7 +1,7 @@
 """Module containing trade_offer repository abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from typing import Any, List
 
 from card_collector.core.domains.trade_offer import TradeOfferIn
 
@@ -10,11 +10,44 @@ class ITradeOfferRepository(ABC):
     """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
-    async def get_all_trade_offers(self) -> Iterable[Any]:
+    async def get_all_trade_offers(self) -> List[Any]:
         """The abstract getting all trade_offers from the data storage.
 
         Returns:
-            Iterable[Any]: TradeOffers in the data storage.
+            List[Any]: TradeOffers in the data storage.
+        """
+    @abstractmethod
+    async def get_all_by_card_offered(self, card_offered: int) -> List[Any]:
+        """The abstract getting all trade_offers from the data storage.
+
+        Args:
+            card_offered (int): the id of card_offered.
+
+        Returns:
+            List[Any]: TradeOffers in the data storage.
+        """
+
+    @abstractmethod
+    async def get_all_by_card_wanted(self, card_wanted: int) -> List[Any]:
+        """The abstract getting all trade_offers from the data storage.
+
+        Args:
+            card_wanted (int): the id of card_wanted.
+
+        Returns:
+            List[Any]: TradeOffers in the data storage.
+        """
+
+    @abstractmethod
+    async def get_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> Any | None:
+        """The abstract getting trade_offer by provided id.
+
+        Args:
+            profile_id (int): the id of profile.
+            card_offered_id (int): the id of card_offered.
+
+        Returns:
+            Any | None: The trade_offer details.
         """
 
     @abstractmethod
@@ -65,4 +98,3 @@ class ITradeOfferRepository(ABC):
         Returns:
             bool: Success of the operation.
         """
-        

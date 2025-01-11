@@ -42,6 +42,7 @@ trade_offer_table = sqlalchemy.Table(
     "trade_offer",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("profile_posted", sqlalchemy.Integer),
     sqlalchemy.Column("card_offered", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id')),
     sqlalchemy.Column("card_wanted", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
 )
