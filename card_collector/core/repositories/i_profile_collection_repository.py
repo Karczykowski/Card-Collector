@@ -61,6 +61,17 @@ class IProfileCollectionRepository(ABC):
         """
 
     @abstractmethod
+    async def get_by_trade_offer(self, trade_offer_id: int) -> Any | None:
+        """The abstract getting profile_collection by provided id.
+
+        Args:
+            trade_offer_id (int): The id of the trade offer.
+
+        Returns:
+            Any | None: The profile_collection details.
+        """
+
+    @abstractmethod
     async def add_card_to_profile_collection(self, data: ProfileCollectionIn) -> Any | None:
         """The abstract adding new profile_collection to the data storage.
 

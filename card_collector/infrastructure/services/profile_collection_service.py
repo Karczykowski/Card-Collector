@@ -66,6 +66,18 @@ class ProfileCollectionService(IProfileCollectionService):
 
         return await self._repository.get_by_id(profile_collection_id)
 
+    async def get_by_trade_offer(self, trade_offer_id: int) -> ProfileCollection | None:
+        """The method getting profile_collection by provided id.
+
+        Args:
+            trade_offer_id (int): The id of the trade offer.
+
+        Returns:
+            ProfileCollection | None: The profile_collection details.
+        """
+
+        return await self._repository.get_by_trade_offer(trade_offer_id)
+
     async def get_profile_collection_by_profile_id(self, profile_collection_id: int) -> List[ProfileCollection] | None:
         """The method getting profile_collection by provided id.
 
@@ -139,7 +151,7 @@ class ProfileCollectionService(IProfileCollectionService):
 
         removed_profile_collection = await self._repository.delete_profile_collection(profile_collection_id)
 
-        if not await self.get_profile_collection_by_profile_id_and_card_id(removed_profile_collection_profile_id, removed_profile_collection_card_id):
+        if not await self.get_profile_collection_by_profile_id_and_card_id(removed_profile_collection_profile_id, removed_profile_collection_card_id): # If
             await self._trade_offer_service.delete_trade_offer_by_profile_id_and_card_offered_id(removed_profile_collection_profile_id, removed_profile_collection_card_id)
 
         return removed_profile_collection

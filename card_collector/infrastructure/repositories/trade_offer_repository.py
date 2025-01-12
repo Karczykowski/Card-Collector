@@ -80,6 +80,35 @@ class TradeOfferRepository(ITradeOfferRepository):
 
         return TradeOffer.from_record(trade_offer) if trade_offer else None
 
+    async def get_by_offer(self, card_offered: int, card_wanted: int) -> Any | None:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            card_offered (int): the id of card offered.
+            card_wanted (int): the id of card wanted.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+        trade_offer = await self._get_by_offer(card_offered, card_wanted)
+
+        return TradeOffer.from_record(trade_offer) if trade_offer else None
+
+    async def get_profile_by_id(self, offer_id: int) -> int:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            offer_id (int): the id of card offered.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+        result = await self._profile_by_id(offer_id)
+
+        return TradeOffer.from_record(trade_offer) if trade_offer else None
+
     async def get_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> Any | None:
         """The method getting trade_offer by provided id.
 
@@ -184,6 +213,43 @@ class TradeOfferRepository(ITradeOfferRepository):
         query = (
             trade_offer_table.select()
             .where(trade_offer_table.c.id == trade_offer_id)
+        )
+
+        return await database.fetch_one(query)
+
+    async def _get_by_offer(self, card_offered, card_wanted) -> Record | None:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            card_offered (int): the id of card offered.
+            card_wanted (int): the id of card wanted.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+        query = (
+            trade_offer_table.select()
+            .where(
+                    trade_offer_table.c.card_offered == card_offered,
+                    trade_offer_table.c.card_wanted == card_wanted)
+            )
+
+        return await database.fetch_one(query)
+
+    async def _get_profile_by_id(self, offer_id) -> Record | None:
+        """A private method getting trade_offer from the DB based on its ID.
+
+        Args:
+            offer_id (int): The ID of the trade_offer.
+
+        Returns:
+            Any | None: TradeOffer record if exists.
+        """
+
+        query = (
+            trade_offer_table.select()
+            .where(trade_offer_table.c.id == offer_id)
         )
 
         return await database.fetch_one(query)

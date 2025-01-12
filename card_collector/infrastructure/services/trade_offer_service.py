@@ -77,14 +77,38 @@ class TradeOfferService(ITradeOfferService):
 
         return await self._repository.get_by_id(trade_offer_id)
 
-    async def add_trade_offer(self, data: TradeOfferIn) -> TradeOffer | None:
-        """The method adding new trade_offer to the data storage.
+    async def get_by_offer(self, card_offered: int, card_wanted: int) -> TradeOffer | None:
+        """The method getting trade_offer by provided id.
 
         Args:
-            data (TradeOfferIn): The details of the new trade_offer.
+            card_offered (int): the id of card offered.
+            card_wanted (int): the id of card wanted.
 
         Returns:
-            TradeOffer | None: Full details of the newly added trade_offer.
+            TradeOffer | None: The trade_offer details.
+        """
+
+        return await self._repository.get_by_offer(card_offered, card_wanted)
+
+    async def get_profile_by_id(self, offer_id: int) -> int:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            offer_id (int): the id of card offered.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+        return await self._repository.get_profile_by_id(offer_id)
+
+    async def add_trade_offer(self, data: TradeOfferIn) -> TradeOffer | None:
+        """The method adding new profile to the data storage.
+
+        Args:
+            data (ProfileIn): The details of the new profile.
+
+        Returns:
+            Profile | None: Full details of the newly added profile.
         """
 
         return await self._repository.add_trade_offer(data)

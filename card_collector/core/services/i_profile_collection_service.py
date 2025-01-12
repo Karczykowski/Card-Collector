@@ -48,6 +48,17 @@ class IProfileCollectionService(ABC):
         """
 
     @abstractmethod
+    async def get_by_trade_offer(self, trade_offer_id: int) -> ProfileCollection | None:
+        """The method getting profile_collection by provided id.
+
+        Args:
+            trade_offer_id (int): The id of the profile_collection.
+
+        Returns:
+            ProfileCollection | None: The profile_collection details.
+        """
+
+    @abstractmethod
     async def  get_profile_collection_by_profile_id(self, profile_id: int) -> List[ProfileCollection]:
         """The method getting all profile_collections with a given profile.
 

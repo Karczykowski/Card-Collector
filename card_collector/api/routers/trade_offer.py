@@ -10,6 +10,7 @@ from card_collector.core.services.i_trade_offer_service import ITradeOfferServic
 from card_collector.core.repositories.i_profile_repository import IProfileRepository
 from card_collector.core.repositories.i_card_repository import ICardRepository
 from card_collector.core.repositories.i_profile_collection_repository import IProfileCollectionRepository
+from card_collector.core.services.i_collection_integration_service import ICollectionIntegrationService
 
 router = APIRouter()
 
@@ -21,7 +22,8 @@ async def create_trade_offer(
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
         profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
         card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
-        profile_collection_repository: IProfileCollectionRepository = Depends(Provide[Container.profile_collection_repository])
+        profile_collection_repository: IProfileCollectionRepository = Depends(Provide[Container.profile_collection_repository]),
+        collection_integration_service: ICollectionIntegrationService = Depends(Provide[Container.collection_integration_service])
 ) -> dict:
     """An endpoint for adding new trade_offer.
 
@@ -39,10 +41,10 @@ async def create_trade_offer(
         if await card_repository.get_by_id(trade_offer.card_wanted):
             if await profile_collection_repository.get_profile_collection_by_profile_id_and_card_id(trade_offer.card_offered, trade_offer.profile_posted):
 
-                new_trade_offer = await service.add_trade_offer(trade_offer)
+                new_trade_offer = await collection_integration_service.add_trade_offer(trade_offer)
                 return new_trade_offer.model_dump() if new_trade_offer else {}
 
-            raise HTTPException(status_code=404, detail="Couldn't find specified card in profile collection")
+            raise HTTPException(status_code=404, detail="Couldn't find specified card offered in profile collection")
         raise HTTPException(status_code=404, detail="Card wanted not found in card data base")
     raise HTTPException(status_code=404, detail="Profile not found")
 

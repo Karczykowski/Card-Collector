@@ -62,6 +62,29 @@ class ITradeOfferRepository(ABC):
         """
 
     @abstractmethod
+    async def get_by_offer(self, card_offered: int, card_wanted: int) -> Any | None:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            card_offered (int): the id of card offered.
+            card_wanted (int): the id of card wanted.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+    @abstractmethod
+    async def get_profile_by_id(self, offer_id: int) -> int:
+        """The method getting trade_offer by provided id.
+
+        Args:
+            offer_id (int): the id of card offered.
+
+        Returns:
+            TradeOffer | None: The trade_offer details.
+        """
+
+    @abstractmethod
     async def add_trade_offer(self, data: TradeOfferIn) -> Any | None:
         """The abstract adding new trade_offer to the data storage.
 

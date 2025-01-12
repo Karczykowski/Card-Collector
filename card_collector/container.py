@@ -16,14 +16,14 @@ from card_collector.infrastructure.services.profile_collection_service import Pr
 from card_collector.infrastructure.repositories.trade_offer_repository import TradeOfferRepository
 from card_collector.infrastructure.services.trade_offer_service import TradeOfferService
 
+from card_collector.infrastructure.services.collection_integration_service import CollectionIntegrationService
+
 class Container(DeclarativeContainer):
     """Container class for dependency injecting purposes."""
     card_repository = Singleton(CardRepository)
     profile_repository = Singleton(ProfileRepository)
     profile_collection_repository = Singleton(ProfileCollectionRepository)
     trade_offer_repository = Singleton(TradeOfferRepository)
-
-
 
     trade_offer_service = Factory(
         TradeOfferService,
@@ -33,6 +33,12 @@ class Container(DeclarativeContainer):
     profile_collection_service = Factory(
         ProfileCollectionService,
         repository=profile_collection_repository,
+        trade_offer_service=trade_offer_service
+    )
+
+    collection_integration_service = Factory(
+        CollectionIntegrationService,
+        profile_collection_service=profile_collection_service,
         trade_offer_service=trade_offer_service
     )
 

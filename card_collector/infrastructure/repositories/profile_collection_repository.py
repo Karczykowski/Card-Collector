@@ -10,6 +10,7 @@ from card_collector.core.domains.profile_collection import ProfileCollection, Pr
 from card_collector.core.domains.card import Card
 from card_collector.db import (
     profile_collection_table,
+    trade_offer_table,
     card_table,
     database,
 )
@@ -109,6 +110,20 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
 
         return ProfileCollection.from_record(profile_collection) if profile_collection else None
 
+    async def get_by_trade_offer(self, trade_offer_id: int) -> Any | None:
+        """The method getting profile_collection by provided id.
+
+        Args:
+            trade_offer_id (int): The id of the profile_collection.
+
+        Returns:
+            Any | None: The profile_collection details.
+        """
+
+        profile_collection = await self._get_by_trade_offer(trade_offer_id)
+
+        return ProfileCollection.from_record(profile_collection) if profile_collection else None
+
 
     async def add_card_to_profile_collection(self, data: ProfileCollectionIn) -> Any | None:
         """The method adding new profile_collection to the data storage.
@@ -191,6 +206,24 @@ class ProfileCollectionRepository(IProfileCollectionRepository):
         query = (
             profile_collection_table.select()
             .where(profile_collection_table.c.id == profile_collection_id)
+        )
+
+        return await database.fetch_one(query)
+
+    async def _get_by_trade_offer(self, trade_offer_id: int) -> Record | None:
+        """A private method getting profile_collection from the DB based on its ID.
+
+        Args:
+            trade_offer_id (int): The ID of the trade offer.
+
+        Returns:
+            Any | None: ProfileCollection record if exists.
+        """
+
+        query = (
+            select(profile_collection_table, trade_offer_table)
+            .join(trade_offer_table, profile_collection_table.c.profile_id == trade_offer_table.c.profile_posted)
+            .where(trade_offer_table.c.id == trade_offer_id)
         )
 
         return await database.fetch_one(query)

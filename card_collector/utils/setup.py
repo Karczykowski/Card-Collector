@@ -3,15 +3,18 @@ from dependency_injector.wiring import Provide
 from card_collector.core.domains.card import CardIn
 from card_collector.core.domains.profile import ProfileIn
 from card_collector.core.domains.profile_collection import ProfileCollectionIn
+from card_collector.core.domains.trade_offer import TradeOfferIn
 from card_collector.core.services.i_card_service import ICardService
 from card_collector.core.services.i_profile_service import IProfileService
 from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
+from card_collector.core.services.i_trade_offer_service import ITradeOfferService
 from card_collector.container import Container
 
 async def main(
         card_service: ICardService = Provide[Container.card_service],
         profile_service: IProfileService = Provide[Container.profile_service],
         profile_collection_service: IProfileCollectionService = Provide[Container.profile_collection_service],
+        trade_offer_service: ITradeOfferService = Provide[Container.trade_offer_service],
 
 ):
     cards = []
@@ -289,6 +292,10 @@ async def main(
         card_id=cards[3].id
     ))
     await profile_collection_service.add_card_to_profile_collection(ProfileCollectionIn(
+        profile_id=profiles[3].id,
+        card_id=cards[17].id
+    ))
+    await profile_collection_service.add_card_to_profile_collection(ProfileCollectionIn(
         profile_id=profiles[4].id,
         card_id=cards[17].id
     ))
@@ -299,4 +306,62 @@ async def main(
     await profile_collection_service.add_card_to_profile_collection(ProfileCollectionIn(
         profile_id=profiles[4].id,
         card_id=cards[19].id
+    ))
+
+    """
+   Adding Trade Offers
+   """
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[2].id,
+        card_offered=cards[3].id,
+        card_wanted=cards[17].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[2].id,
+        card_offered=cards[4].id,
+        card_wanted=cards[17].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[2].id,
+        card_offered=cards[5].id,
+        card_wanted=cards[17].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[2].id,
+        card_offered=cards[5].id,
+        card_wanted=cards[16].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[2].id,
+        card_offered=cards[5].id,
+        card_wanted=cards[15].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[3].id,
+        card_offered=cards[9].id,
+        card_wanted=cards[1].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[3].id,
+        card_offered=cards[2].id,
+        card_wanted=cards[3].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[4].id,
+        card_offered=cards[19].id,
+        card_wanted=cards[5].id
+    ))
+
+    await trade_offer_service.add_trade_offer(TradeOfferIn(
+        profile_posted=profiles[4].id,
+        card_offered=cards[19].id,
+        card_wanted=cards[5].id
     ))
