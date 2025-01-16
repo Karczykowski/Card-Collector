@@ -95,20 +95,6 @@ class TradeOfferRepository(ITradeOfferRepository):
 
         return TradeOffer.from_record(trade_offer) if trade_offer else None
 
-    async def get_profile_by_id(self, offer_id: int) -> int:
-        """The method getting trade_offer by provided id.
-
-        Args:
-            offer_id (int): the id of card offered.
-
-        Returns:
-            TradeOffer | None: The trade_offer details.
-        """
-
-        result = await self._profile_by_id(offer_id)
-
-        return TradeOffer.from_record(trade_offer) if trade_offer else None
-
     async def get_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> Any | None:
         """The method getting trade_offer by provided id.
 

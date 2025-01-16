@@ -95,6 +95,9 @@ async def update_trade_offer(
         trade_offer_id: int,
         updated_trade_offer: TradeOfferIn,
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
+        profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
+        card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
+        profile_collection_repository: IProfileCollectionRepository = Depends(Provide[Container.profile_collection_repository]),
 ) -> dict:
     """An endpoint for updating trade_offer data.
 
@@ -111,12 +114,17 @@ async def update_trade_offer(
     """
 
     if await service.get_by_id(trade_offer_id=trade_offer_id):
-        await service.update_trade_offer(
-            trade_offer_id=trade_offer_id,
-            data=updated_trade_offer,
-        )
-        return {**updated_trade_offer.model_dump(), "id": trade_offer_id}
-
+        if await profile_repository.get_by_id(updated_trade_offer.profile_posted):
+            if await profile_collection_repository.get_profile_collection_by_profile_id_and_card_id(updated_trade_offer.card_offered, updated_trade_offer.profile_posted):
+                if await card_repository.get_by_id(updated_trade_offer.card_wanted):
+                    await service.update_trade_offer(
+                        trade_offer_id=trade_offer_id,
+                        data=updated_trade_offer,
+                    )
+                    return {**updated_trade_offer.model_dump(), "id": trade_offer_id}
+                raise HTTPException(status_code=404, detail="Card wanted not found in card data base")
+            raise HTTPException(status_code=404, detail="Couldn't find specified card offered in profile collection")
+        raise HTTPException(status_code=404, detail="Profile not found")
     raise HTTPException(status_code=404, detail="Trade Offer not found")
 
 

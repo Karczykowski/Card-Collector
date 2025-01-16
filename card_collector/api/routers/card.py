@@ -66,8 +66,9 @@ async def get_all_by_rarity(
     """
 
     cards = await service.get_all_by_rarity(rarity_id)
-
-    return cards
+    if cards:
+        return cards
+    raise HTTPException(status_code=404, detail="No cards found with given rarity")
 
 
 @router.get("/{card_id}",response_model=Card,status_code=200,)

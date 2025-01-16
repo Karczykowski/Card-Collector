@@ -47,6 +47,17 @@ trade_offer_table = sqlalchemy.Table(
     sqlalchemy.Column("card_wanted", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
 )
 
+quest_table = sqlalchemy.Table(
+    "quest_table",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("profile_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('profile.id')),
+    sqlalchemy.Column("cards_collected", sqlalchemy.Integer),
+    sqlalchemy.Column("cards_needed", sqlalchemy.Integer),
+    sqlalchemy.Column("rarity_needed", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.rarity_id')),
+    sqlalchemy.Column("reward_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
+)
+
 db_uri = (
     f"postgresql+asyncpg://{config.DB_USER}:{config.DB_PASSWORD}"
     f"@{config.DB_HOST}/{config.DB_NAME}"

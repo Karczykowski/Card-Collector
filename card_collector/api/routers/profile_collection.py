@@ -49,21 +49,27 @@ async def get_profile_collection_by_profile_id(
 ) -> List:
 
     profile_collections = await service.get_profile_collection_by_profile_id(profile_id)
+    if profile_collections:
+        return profile_collections
 
-    return profile_collections
+    raise HTTPException(status_code=404, detail="Profile not found")
 
 @router.get("/all_by_prof_and_card_id", response_model=List[ProfileCollection], status_code=200)
 @inject
 async def get_profile_collection_by_profile_id_and_card_id(
         card_id: int,
         profile_id: int,
+        card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
+        profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
 ) -> List:
 
-    profile_collections = await service.get_profile_collection_by_profile_id_and_card_id(card_id, profile_id)
-
-    return profile_collections
-
+    if await card_repository.get_by_id(card_id):
+        if await profile_repository.get_by_id(profile_id):
+            profile_collections = await service.get_profile_collection_by_profile_id_and_card_id(card_id, profile_id)
+            return profile_collections
+        raise HTTPException(status_code=404, detail="Profile not found")
+    raise HTTPException(status_code=404, detail="Card not found")
 
 
 
