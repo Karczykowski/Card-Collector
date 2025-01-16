@@ -16,6 +16,9 @@ from card_collector.infrastructure.services.profile_collection_service import Pr
 from card_collector.infrastructure.repositories.trade_offer_repository import TradeOfferRepository
 from card_collector.infrastructure.services.trade_offer_service import TradeOfferService
 
+from card_collector.infrastructure.repositories.quest_repository import QuestRepository
+from card_collector.infrastructure.services.quest_service import QuestService
+
 from card_collector.infrastructure.services.collection_integration_service import CollectionIntegrationService
 
 class Container(DeclarativeContainer):
@@ -24,6 +27,7 @@ class Container(DeclarativeContainer):
     profile_repository = Singleton(ProfileRepository)
     profile_collection_repository = Singleton(ProfileCollectionRepository)
     trade_offer_repository = Singleton(TradeOfferRepository)
+    quest_repository = Singleton(QuestRepository)
 
     trade_offer_service = Factory(
         TradeOfferService,
@@ -53,6 +57,11 @@ class Container(DeclarativeContainer):
         repository=profile_repository,
         card_service=card_service,
         profile_collection_service=profile_collection_service
+    )
+
+    quest_service = Factory(
+        QuestService,
+        repository=quest_repository
     )
 
 

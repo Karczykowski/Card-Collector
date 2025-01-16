@@ -4,10 +4,12 @@ from card_collector.core.domains.card import CardIn
 from card_collector.core.domains.profile import ProfileIn
 from card_collector.core.domains.profile_collection import ProfileCollectionIn
 from card_collector.core.domains.trade_offer import TradeOfferIn
+from card_collector.core.domains.quest import QuestIn
 from card_collector.core.services.i_card_service import ICardService
 from card_collector.core.services.i_profile_service import IProfileService
 from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
 from card_collector.core.services.i_trade_offer_service import ITradeOfferService
+from card_collector.core.services.i_quest_service import IQuestService
 from card_collector.container import Container
 
 async def main(
@@ -15,6 +17,7 @@ async def main(
         profile_service: IProfileService = Provide[Container.profile_service],
         profile_collection_service: IProfileCollectionService = Provide[Container.profile_collection_service],
         trade_offer_service: ITradeOfferService = Provide[Container.trade_offer_service],
+        quest_service: IQuestService = Provide[Container.quest_repository],
 
 ):
     cards = []
@@ -365,3 +368,41 @@ async def main(
         card_offered=cards[19].id,
         card_wanted=cards[5].id
     ))
+
+    """
+   Adding Quests
+   """
+
+    await quest_service.add_quest(QuestIn(
+        profile_id=profiles[2].id,
+        cards_collected=2,
+        cards_needed=8,
+        rarity_needed=2,
+        reward=cards[18].id,
+    ))
+
+    await quest_service.add_quest(QuestIn(
+        profile_id=profiles[2].id,
+        cards_collected=13,
+        cards_needed=15,
+        rarity_needed=1,
+        reward=cards[15].id,
+    ))
+
+    await quest_service.add_quest(QuestIn(
+        profile_id=profiles[3].id,
+        cards_collected=0,
+        cards_needed=11,
+        rarity_needed=2,
+        reward=cards[18].id,
+    ))
+
+    await quest_service.add_quest(QuestIn(
+        profile_id=profiles[4].id,
+        cards_collected=3,
+        cards_needed=9,
+        rarity_needed=1,
+        reward=cards[13].id,
+    ))
+
+

@@ -24,7 +24,6 @@ class QuestRepository(IQuestRepository):
 
         query = (
             select(quest_table)
-            .order_by(quest_table.c.name.asc())
         )
         quests = await database.fetch_all(query)
 
@@ -125,7 +124,6 @@ class QuestRepository(IQuestRepository):
         query = (
             quest_table.select()
             .where(quest_table.c.id == quest_id)
-            .order_by(quest_table.c.name.asc())
         )
 
         return await database.fetch_one(query)

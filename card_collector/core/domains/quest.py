@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class QuestIn(BaseModel):
-    """Model representing card's DTO attributes."""
+    """Model representing quest's DTO attributes."""
     profile_id: int
     cards_collected: int
     cards_needed: int
@@ -21,19 +21,22 @@ class Quest(QuestIn):
     model_config = ConfigDict(from_attributes=True, extra="ignore")
 
     @classmethod
-    def from_quest(cls, quest: Record) -> "Quest":
+    def from_record(cls, record: Record) -> "Quest":
         """A method for preparing DTO instance based on DB quest.
 
         Args:
-            quest (Record): The DB quest.
+            record (Record): The DB quest.
 
         Returns:
             QuestDTO: The final DTO instance.
         """
-        quest_dict = dict(quest)
+        record_dict = dict(record)
 
         return cls(
-            id=quest_dict.get("id"),  # type: ignore
-            name=quest_dict.get("name"),  # type: ignore
-            rarity_id=quest_dict.get("rarity_id"), # type: ignore
+            id=record_dict.get("id"),  # type: ignore
+            profile_id=record_dict.get("profile_id"),  # type: ignore
+            cards_collected=record_dict.get("cards_collected"), # type: ignore
+            cards_needed=record_dict.get("cards_needed"), # type: ignore
+            rarity_needed=record_dict.get("rarity_needed"), # type: ignore
+            reward=record_dict.get("reward"), # type: ignore
         )

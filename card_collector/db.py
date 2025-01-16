@@ -54,8 +54,8 @@ quest_table = sqlalchemy.Table(
     sqlalchemy.Column("profile_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('profile.id')),
     sqlalchemy.Column("cards_collected", sqlalchemy.Integer),
     sqlalchemy.Column("cards_needed", sqlalchemy.Integer),
-    sqlalchemy.Column("rarity_needed", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.rarity_id')),
-    sqlalchemy.Column("reward_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
+    sqlalchemy.Column("rarity_needed", sqlalchemy.Integer),
+    sqlalchemy.Column("reward", sqlalchemy.Integer, sqlalchemy.ForeignKey('card.id'))
 )
 
 db_uri = (
