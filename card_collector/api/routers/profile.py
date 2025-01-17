@@ -18,11 +18,12 @@ async def create_profile(
         profile: ProfileIn,
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> dict:
-    """An endpoint for adding new profile.
+    """
+    An endpoint for adding new profile.
 
     Args:
         profile (ProfileIn): The profile data.
-        service (IProfileService, optional): The injected service dependency.
+        service (IProfileService): The injected service dependency.
 
     Returns:
         dict: The new profile attributes.
@@ -37,10 +38,11 @@ async def create_profile(
 async def get_all_profiles(
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> List:
-    """An endpoint for getting all profiles.
+    """
+    An endpoint for getting all profiles.
 
     Args:
-        service (IProfileService, optional): The injected service dependency.
+        service (IProfileService): The injected service dependency.
 
     Returns:
         List: The profile attributes collection.
@@ -50,19 +52,18 @@ async def get_all_profiles(
 
     return profiles
 
-
-
 @router.get("/{profile_id}",response_model=Profile,status_code=200,)
 @inject
 async def get_profile_by_id(
         profile_id: int,
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> dict | None:
-    """An endpoint for getting profile by id.
+    """
+    An endpoint for getting profile by id.
 
     Args:
         profile_id (int): The id of the profile.
-        service (IProfileService, optional): The injected service dependency.
+        service (IProfileService): The injected service dependency.
 
     Returns:
         dict | None: The profile details.
@@ -81,18 +82,20 @@ async def update_profile(
         updated_profile: ProfileIn,
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> dict:
-    """An endpoint for updating profile data.
+    """
+    An endpoint for updating profile data.
 
     Args:
         profile_id (int): The id of the profile.
         updated_profile (ProfileIn): The updated profile details.
-        service (IProfiletService, optional): The injected service dependency.
+        service (IProfileService): The injected service dependency.
+
+    Returns:
+        dict: The updated profile details.
 
     Raises:
         HTTPException: 404 if profile does not exist.
 
-    Returns:
-        dict: The updated profile details.
     """
 
     if await service.get_by_id(profile_id=profile_id):
@@ -111,7 +114,8 @@ async def delete_profile(
         profile_id: int,
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> None:
-    """An endpoint for deleting profiles.
+    """
+    An endpoint for deleting profiles.
 
     Args:
         profile_id (int): The id of the profile.
@@ -134,7 +138,8 @@ async def open_pack(
         profile_id: int,
         service: IProfileService = Depends(Provide[Container.profile_service]),
 ) -> List[Card]:
-    """An endpoint for opening a pack of cards and assigning the cards to profile
+    """
+    An endpoint for opening a pack of cards and adding the cards to profile
 
     Args:
         profile_id (int): The id of the profile.

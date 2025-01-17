@@ -95,7 +95,6 @@ class CardService(ICardService):
             bool: Success of the operation.
         """
 
-        [await self._profile_collection_service.delete_profile_collection(profile_collection.id) for profile_collection in await self._profile_collection_service.get_all_by_card_id(card_id)]
         return await self._repository.delete_card(card_id)
 
     async def get_random_cards_by_rarity(self, amount: int, rarity_id: int) -> List[Card]:

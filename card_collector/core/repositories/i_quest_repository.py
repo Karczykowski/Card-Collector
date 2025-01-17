@@ -18,6 +18,22 @@ class IQuestRepository(ABC):
         """
 
     @abstractmethod
+    async def get_all_by_profile(self, profile_id: int) -> List[Any]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+    @abstractmethod
+    async def get_all_by_reward(self, reward_id: int) -> List[Any]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+    @abstractmethod
     async def get_by_id(self, quest_id: int) -> Any | None:
         """The abstract getting quest by provided id.
 
@@ -65,4 +81,14 @@ class IQuestRepository(ABC):
         Returns:
             bool: Success of the operation.
         """
-        
+
+    @abstractmethod
+    async def update_cards_collected(self, quest_id: int) -> Any | None:
+        """Abstract method for updating quest progress
+
+        Args:
+            quest_id (int): The id of the quest.
+
+        Returns:
+            bool: Success of the operation.
+        """

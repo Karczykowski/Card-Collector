@@ -7,9 +7,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from card_collector.container import Container
 from card_collector.core.domains.trade_offer import TradeOffer, TradeOfferIn
 from card_collector.core.services.i_trade_offer_service import ITradeOfferService
-from card_collector.core.repositories.i_profile_repository import IProfileRepository
-from card_collector.core.repositories.i_card_repository import ICardRepository
-from card_collector.core.repositories.i_profile_collection_repository import IProfileCollectionRepository
+from card_collector.core.services.i_profile_service import IProfileService
+from card_collector.core.services.i_card_service import ICardService
+from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
 from card_collector.core.services.i_collection_integration_service import ICollectionIntegrationService
 
 router = APIRouter()
@@ -20,9 +20,9 @@ router = APIRouter()
 async def create_trade_offer(
         trade_offer: TradeOfferIn,
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
-        profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
-        card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
-        profile_collection_repository: IProfileCollectionRepository = Depends(Provide[Container.profile_collection_repository]),
+        profile_service: IProfileService = Depends(Provide[Container.profile_service]),
+        card_service: ICardService = Depends(Provide[Container.card_service]),
+        profile_collection_service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
         collection_integration_service: ICollectionIntegrationService = Depends(Provide[Container.collection_integration_service])
 ) -> dict:
     """An endpoint for adding new trade_offer.
@@ -30,22 +30,22 @@ async def create_trade_offer(
     Args:
         trade_offer (TradeOfferIn): The trade_offer data.
         service (ITradeOfferService, optional): The injected service dependency.
-        profile_repository: The injected profile_repository.
-        card_repository: The Injected card_repository.
-        profile_collection_repository: The injected profile_collection
+        profile_service: The injected profile_service.
+        card_service: The Injected card_service.
+        profile_collection_service: The injected profile_collection
 
     Returns:
         dict: The new trade_offer attributes.
     """
-    if await profile_repository.get_by_id(trade_offer.profile_posted):
-        if await card_repository.get_by_id(trade_offer.card_wanted):
-            if await profile_collection_repository.get_profile_collection_by_profile_id_and_card_id(trade_offer.card_offered, trade_offer.profile_posted):
+    if await profile_service.get_by_id(trade_offer.profile_posted):
+        if await card_service.get_by_id(trade_offer.card_wanted):
+            if await profile_collection_service.get_profile_collection_by_profile_id_and_card_id(trade_offer.card_offered, trade_offer.profile_posted):
 
                 new_trade_offer = await collection_integration_service.add_trade_offer(trade_offer)
                 return new_trade_offer.model_dump() if new_trade_offer else {}
 
-            raise HTTPException(status_code=404, detail="Couldn't find specified card offered in profile collection")
-        raise HTTPException(status_code=404, detail="Card wanted not found in card data base")
+            raise HTTPException(status_code=404, detail="Card offered not found")
+        raise HTTPException(status_code=404, detail="Card wanted not found")
     raise HTTPException(status_code=404, detail="Profile not found")
 
 
@@ -95,9 +95,9 @@ async def update_trade_offer(
         trade_offer_id: int,
         updated_trade_offer: TradeOfferIn,
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
-        profile_repository: IProfileRepository = Depends(Provide[Container.profile_repository]),
-        card_repository: ICardRepository = Depends(Provide[Container.card_repository]),
-        profile_collection_repository: IProfileCollectionRepository = Depends(Provide[Container.profile_collection_repository]),
+        profile_service: IProfileService = Depends(Provide[Container.profile_service]),
+        card_service: ICardService = Depends(Provide[Container.card_service]),
+        profile_collection_service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> dict:
     """An endpoint for updating trade_offer data.
 
@@ -114,16 +114,16 @@ async def update_trade_offer(
     """
 
     if await service.get_by_id(trade_offer_id=trade_offer_id):
-        if await profile_repository.get_by_id(updated_trade_offer.profile_posted):
-            if await profile_collection_repository.get_profile_collection_by_profile_id_and_card_id(updated_trade_offer.card_offered, updated_trade_offer.profile_posted):
-                if await card_repository.get_by_id(updated_trade_offer.card_wanted):
+        if await profile_service.get_by_id(updated_trade_offer.profile_posted):
+            if await profile_collection_service.get_profile_collection_by_profile_id_and_card_id(updated_trade_offer.card_offered, updated_trade_offer.profile_posted):
+                if await card_service.get_by_id(updated_trade_offer.card_wanted):
                     await service.update_trade_offer(
                         trade_offer_id=trade_offer_id,
                         data=updated_trade_offer,
                     )
                     return {**updated_trade_offer.model_dump(), "id": trade_offer_id}
-                raise HTTPException(status_code=404, detail="Card wanted not found in card data base")
-            raise HTTPException(status_code=404, detail="Couldn't find specified card offered in profile collection")
+                raise HTTPException(status_code=404, detail="Card wanted not found")
+            raise HTTPException(status_code=404, detail="Card offered not found")
         raise HTTPException(status_code=404, detail="Profile not found")
     raise HTTPException(status_code=404, detail="Trade Offer not found")
 

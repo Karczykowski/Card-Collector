@@ -34,10 +34,16 @@ class Container(DeclarativeContainer):
         repository=trade_offer_repository,
     )
 
+    quest_service = Factory(
+        QuestService,
+        repository=quest_repository
+    )
+
     profile_collection_service = Factory(
         ProfileCollectionService,
         repository=profile_collection_repository,
-        trade_offer_service=trade_offer_service
+        trade_offer_service=trade_offer_service,
+        quest_service=quest_service
     )
 
     collection_integration_service = Factory(
@@ -49,20 +55,18 @@ class Container(DeclarativeContainer):
     card_service = Factory(
         CardService,
         repository=card_repository,
-        profile_collection_service=profile_collection_service
+        profile_collection_service=profile_collection_service,
     )
 
     profile_service = Factory(
         ProfileService,
         repository=profile_repository,
         card_service=card_service,
-        profile_collection_service=profile_collection_service
+        profile_collection_service=profile_collection_service,
+        quest_service=quest_service
     )
 
-    quest_service = Factory(
-        QuestService,
-        repository=quest_repository
-    )
+
 
 
 

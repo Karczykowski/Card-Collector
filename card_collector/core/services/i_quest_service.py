@@ -18,6 +18,22 @@ class IQuestService(ABC):
         """
 
     @abstractmethod
+    async def get_all_by_profile(self, profile_id: int) -> List[Quest]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+    @abstractmethod
+    async def get_all_by_reward(self, reward_id: int) -> List[Quest]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+    @abstractmethod
     async def get_by_id(self, quest_id: int) -> Quest | None:
         """The method getting quest by provided id.
 
@@ -53,6 +69,17 @@ class IQuestService(ABC):
 
         Returns:
             Quest | None: The updated quest details.
+        """
+
+    @abstractmethod
+    async def complete_quest(self, quest_id: int) -> bool:
+        """The method for completing quest
+
+        Args:
+            quest_id (int): The id of the quest.
+
+        Returns:
+            bool: Success of the operation.
         """
 
     @abstractmethod

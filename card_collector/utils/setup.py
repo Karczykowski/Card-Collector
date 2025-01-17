@@ -316,8 +316,8 @@ async def main(
    """
 
     await trade_offer_service.add_trade_offer(TradeOfferIn(
-        profile_posted=profiles[2].id,
-        card_offered=cards[3].id,
+        profile_posted=profiles[0].id,
+        card_offered=cards[0].id,
         card_wanted=cards[17].id
     ))
 
@@ -377,7 +377,6 @@ async def main(
         profile_id=profiles[2].id,
         cards_collected=2,
         cards_needed=8,
-        rarity_needed=2,
         reward=cards[18].id,
     ))
 
@@ -385,7 +384,6 @@ async def main(
         profile_id=profiles[2].id,
         cards_collected=13,
         cards_needed=15,
-        rarity_needed=1,
         reward=cards[15].id,
     ))
 
@@ -393,15 +391,13 @@ async def main(
         profile_id=profiles[3].id,
         cards_collected=0,
         cards_needed=11,
-        rarity_needed=2,
         reward=cards[18].id,
     ))
 
     await quest_service.add_quest(QuestIn(
-        profile_id=profiles[4].id,
-        cards_collected=3,
+        profile_id=profiles[5].id,
+        cards_collected=7,
         cards_needed=9,
-        rarity_needed=1,
         reward=cards[13].id,
     ))
 

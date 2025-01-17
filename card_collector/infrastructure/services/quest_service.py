@@ -29,6 +29,24 @@ class QuestService(IQuestService):
 
         return await self._repository.get_all_quests()
 
+    async def get_all_by_profile(self, profile_id: int) -> List[Quest]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+        return await self._repository.get_all_by_profile(profile_id)
+
+    async def get_all_by_reward(self, reward_id: int) -> List[Quest]:
+        """The method getting all quests from the repository.
+
+        Returns:
+            List[Quest]: All quests.
+        """
+
+        return await self._repository.get_all_by_reward(reward_id)
+
     async def get_by_id(self, quest_id: int) -> Quest | None:
         """The method getting quest by provided id.
 
@@ -72,6 +90,16 @@ class QuestService(IQuestService):
             quest_id=quest_id,
             data=data,
         )
+
+    async def complete_quest(self, quest_id: int) -> bool:
+        """The method for completing quest
+
+        Args:
+            quest_id (int): The id of the quest.
+
+        Returns:
+            bool: Success of the operation.
+        """
 
     async def delete_quest(self, quest_id: int) -> bool:
         """The method updating removing quest from the data storage.

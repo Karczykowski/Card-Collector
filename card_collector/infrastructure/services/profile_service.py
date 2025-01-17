@@ -9,6 +9,7 @@ from card_collector.core.repositories.i_profile_repository import IProfileReposi
 from card_collector.core.services.i_profile_service import IProfileService
 from card_collector.core.services.i_card_service import ICardService
 from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
+from card_collector.core.services.i_quest_service import IQuestService
 
 class ProfileService(IProfileService):
     """A class implementing the profile service."""
@@ -16,8 +17,9 @@ class ProfileService(IProfileService):
     _repository: IProfileRepository
     _card_service: ICardService
     _profile_collection_service: IProfileCollectionService
+    _quest_service: IQuestService
 
-    def __init__(self, repository: IProfileRepository, card_service: ICardService, profile_collection_service: IProfileCollectionService) -> None:
+    def __init__(self, repository: IProfileRepository, card_service: ICardService, profile_collection_service: IProfileCollectionService, quest_service: IQuestService) -> None:
         """The initializer of the `profile service`.
 
         Args:
@@ -26,6 +28,7 @@ class ProfileService(IProfileService):
         self._repository = repository
         self._card_service = card_service
         self._profile_collection_service = profile_collection_service
+        self._quest_service = quest_service
 
     async def get_all(self) -> List[Profile]:
         """The method getting all profiles from the repository.
@@ -90,6 +93,7 @@ class ProfileService(IProfileService):
             bool: Success of the operation.
         """
         [await self._profile_collection_service.delete_profile_collection(profile_collection.id) for profile_collection in await self._profile_collection_service.get_all_by_profile_id(profile_id)]
+        [await self._quest_service.delete_quest(quest.id) for quest in await self._quest_service.get_all_by_profile(profile_id)]
         return await self._repository.delete_profile(profile_id)
 
     async def open_pack(self, profile_id: int) -> List[Card]:

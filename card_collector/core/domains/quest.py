@@ -10,7 +10,6 @@ class QuestIn(BaseModel):
     profile_id: int
     cards_collected: int
     cards_needed: int
-    rarity_needed: int
     reward: int
 
 
@@ -37,6 +36,5 @@ class Quest(QuestIn):
             profile_id=record_dict.get("profile_id"),  # type: ignore
             cards_collected=record_dict.get("cards_collected"), # type: ignore
             cards_needed=record_dict.get("cards_needed"), # type: ignore
-            rarity_needed=record_dict.get("rarity_needed"), # type: ignore
             reward=record_dict.get("reward"), # type: ignore
         )

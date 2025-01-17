@@ -3,9 +3,11 @@
 from typing import List
 
 from card_collector.core.domains.profile_collection import ProfileCollection, ProfileCollectionIn
+from card_collector.core.domains.quest import QuestIn
 from card_collector.core.repositories.i_profile_collection_repository import IProfileCollectionRepository
 from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
 from card_collector.core.services.i_trade_offer_service import ITradeOfferService
+from card_collector.core.services.i_quest_service import IQuestService
 
 
 class ProfileCollectionService(IProfileCollectionService):
@@ -13,8 +15,9 @@ class ProfileCollectionService(IProfileCollectionService):
 
     _repository: IProfileCollectionRepository
     _trade_offer_service: ITradeOfferService
+    _quest_service: IQuestService
 
-    def __init__(self, repository: IProfileCollectionRepository, trade_offer_service: ITradeOfferService) -> None:
+    def __init__(self, repository: IProfileCollectionRepository, trade_offer_service: ITradeOfferService, quest_service: IQuestService) -> None:
         """The initializer of the `profile_collection service`.
 
         Args:
@@ -22,6 +25,7 @@ class ProfileCollectionService(IProfileCollectionService):
         """
         self._repository = repository
         self._trade_offer_service = trade_offer_service
+        self._quest_service = quest_service
 
     async def get_all(self) -> List[ProfileCollection]:
         """The method getting all profile_collections from the repository.
@@ -112,6 +116,25 @@ class ProfileCollectionService(IProfileCollectionService):
         Returns:
             ProfileCollection | None: Full details of the newly added profile_collection.
         """
+
+        associated_quests = await self._quest_service.get_all_by_profile(data.profile_id)
+
+        for quest in associated_quests:
+            await self._quest_service.update_quest(quest.id, QuestIn(
+                profile_id=quest.profile_id,
+                cards_collected=quest.cards_collected+1,
+                cards_needed=quest.cards_needed,
+                reward=quest.reward
+            ))
+
+            if quest.cards_collected+1 == quest.cards_needed:
+                reward_id = quest.reward
+                await self._quest_service.delete_quest(quest.id)
+                await self.add_card_to_profile_collection(ProfileCollectionIn(
+                    profile_id=data.profile_id,
+                    card_id=reward_id
+                ))
+
 
         return await self._repository.add_card_to_profile_collection(data)
 
