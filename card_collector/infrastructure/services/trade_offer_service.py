@@ -1,19 +1,16 @@
-"""Module containing continent service implementation."""
-import random
 from typing import List
 
 from card_collector.core.domains.trade_offer import TradeOffer, TradeOfferIn
 from card_collector.core.repositories.i_trade_offer_repository import ITradeOfferRepository
 from card_collector.core.services.i_trade_offer_service import ITradeOfferService
 
-
 class TradeOfferService(ITradeOfferService):
-    """A class implementing the trade_offer service."""
 
     _repository: ITradeOfferRepository
 
     def __init__(self, repository: ITradeOfferRepository) -> None:
-        """The initializer of the `trade_offer service`.
+        """
+        The initializer of the trade offer service.
 
         Args:
             repository (ITradeOfferRepository): The reference to the repository.
@@ -21,7 +18,8 @@ class TradeOfferService(ITradeOfferService):
         self._repository = repository
 
     async def get_all(self) -> List[TradeOffer]:
-        """The method getting all trade_offers from the repository.
+        """
+        The method getting all trade offers from the repository.
 
         Returns:
             List[TradeOffer]: All trade_offers.
@@ -30,55 +28,65 @@ class TradeOfferService(ITradeOfferService):
         return await self._repository.get_all_trade_offers()
 
     async def get_all_by_card_offered(self, card_offered: int) -> List[TradeOffer]:
-        """The method getting all trade_offers from the repository.
+        """
+        The method getting all trade offers with a given card offered id from the repository.
 
         Args:
-            card_offered (int): the id of card_offered.
+            card_offered (int): the id of card offered.
 
         Returns:
-            List[TradeOffer]: All trade_offers.
+            List[TradeOffer]: Trade offers.
         """
 
         return await self._repository.get_all_by_card_offered(card_offered)
 
     async def get_all_by_card_wanted(self, card_wanted: int) -> List[TradeOffer]:
-        """The method getting all trade_offers from the repository.
+        """
+        The method getting all trade offers with a given card wanted id from the repository.
 
         Args:
-            card_wanted (int): the id of card_wanted.
+            card_wanted (int): the id of card wanted.
+
         Returns:
-            List[TradeOffer]: All trade_offers.
+            List[TradeOffer]: Trade offers.
         """
 
         return await self._repository.get_all_by_card_wanted(card_wanted)
 
-    async def get_all_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> List[TradeOffer] | None:
-        """The method getting trade_offer by provided id.
+    async def get_all_by_profile_id_and_card_offered_id(
+            self,
+            profile_id: int,
+            card_offered_id: int
+    ) -> List[TradeOffer] | None:
+        """
+        The method getting trade offer with a given profile id and card offered id from the repository.
 
         Args:
             profile_id (int): the id of profile.
             card_offered_id (int): the id of card_offered.
 
         Returns:
-            TradeOffer | None: The trade_offer details.
+            List[TradeOffer] | None: The trade_offer details.
         """
 
         return await self._repository.get_by_profile_id_and_card_offered_id(profile_id, card_offered_id)
 
     async def get_by_id(self, trade_offer_id: int) -> TradeOffer | None:
-        """The method getting trade_offer by provided id.
+        """
+        The method getting trade offer with a given id from the repository.
 
         Args:
-            trade_offer_id (int): The id of the trade_offer.
+            trade_offer_id (int): The id of the trade offer.
 
         Returns:
-            TradeOffer | None: The trade_offer details.
+            TradeOffer | None: The trade offer details.
         """
 
         return await self._repository.get_by_id(trade_offer_id)
 
     async def get_by_offer(self, card_offered: int, card_wanted: int) -> TradeOffer | None:
-        """The method getting trade_offer by provided id.
+        """
+        The method getting trade offer with a given offer id from the repository.
 
         Args:
             card_offered (int): the id of card offered.
@@ -90,25 +98,15 @@ class TradeOfferService(ITradeOfferService):
 
         return await self._repository.get_by_offer(card_offered, card_wanted)
 
-    async def get_profile_by_id(self, offer_id: int) -> int:
-        """The method getting trade_offer by provided id.
-
-        Args:
-            offer_id (int): the id of card offered.
-
-        Returns:
-            TradeOffer | None: The trade_offer details.
-        """
-        return await self._repository.get_profile_by_id(offer_id)
-
     async def add_trade_offer(self, data: TradeOfferIn) -> TradeOffer | None:
-        """The method adding new profile to the data storage.
+        """
+        The method adding new trade offer to the database.
 
         Args:
-            data (ProfileIn): The details of the new profile.
+            data (ProfileIn): The details of the new trade offer.
 
         Returns:
-            Profile | None: Full details of the newly added profile.
+            Profile | None: Full details of the newly added trade offer.
         """
 
         return await self._repository.add_trade_offer(data)
@@ -118,14 +116,15 @@ class TradeOfferService(ITradeOfferService):
             trade_offer_id: int,
             data: TradeOfferIn,
     ) -> TradeOffer | None:
-        """The method updating trade_offer data in the data storage.
+        """
+        The method updating trade offer data in the database.
 
         Args:
-            trade_offer_id (int): The id of the trade_offer.
-            data (TradeOfferIn): The details of the updated trade_offer.
+            trade_offer_id (int): The id of the trade offer.
+            data (TradeOfferIn): The details of the updated trade offer.
 
         Returns:
-            TradeOffer | None: The updated trade_offer details.
+            TradeOffer | None: The updated trade offer details.
         """
 
         return await self._repository.update_trade_offer(
@@ -134,10 +133,11 @@ class TradeOfferService(ITradeOfferService):
         )
 
     async def delete_trade_offer(self, trade_offer_id: int) -> bool:
-        """The method updating removing trade_offer from the data storage.
+        """
+        The method removing trade offer from the database.
 
         Args:
-            trade_offer_id (int): The id of the trade_offer.
+            trade_offer_id (int): The id of the trade offer.
 
         Returns:
             bool: Success of the operation.
@@ -145,12 +145,17 @@ class TradeOfferService(ITradeOfferService):
 
         return await self._repository.delete_trade_offer(trade_offer_id)
 
-    async def delete_trade_offer_by_profile_id_and_card_offered_id(self, profile_id: int, card_offered_id: int) -> List[bool]:
-        """The method updating removing trade_offer from the data storage.
+    async def delete_trade_offer_by_profile_id_and_card_offered_id(
+            self,
+            profile_id: int,
+            card_offered_id: int
+    ) -> List[bool]:
+        """
+        The method removing trade offer with a given profile id and card id from the database.
 
         Args:
             profile_id (int): the id of profile.
-            card_offered_id (int): the id of card_offered.
+            card_offered_id (int): the id of card offered.
 
         Returns:
             bool: Success of the operation.

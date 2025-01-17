@@ -1,6 +1,5 @@
-"""A module containing continent endpoints."""
+from typing import List
 
-from typing import List, List
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -10,7 +9,6 @@ from card_collector.core.domains.profile import Profile, ProfileIn
 from card_collector.core.services.i_profile_service import IProfileService
 
 router = APIRouter()
-
 
 @router.post("/create", response_model=Profile, status_code=201)
 @inject
@@ -95,7 +93,6 @@ async def update_profile(
 
     Raises:
         HTTPException: 404 if profile does not exist.
-
     """
 
     if await service.get_by_id(profile_id=profile_id):
@@ -136,13 +133,15 @@ async def delete_profile(
 @inject
 async def open_pack(
         profile_id: int,
+        amount_of_cards: int,
         service: IProfileService = Depends(Provide[Container.profile_service]),
-) -> List[Card]:
+) -> List:
     """
     An endpoint for opening a pack of cards and adding the cards to profile
 
     Args:
         profile_id (int): The id of the profile.
+        amount_of_cards (int): Amount of cards in a pack.
         service (IProfileService): The injected service dependency.
 
     Raises:
@@ -150,7 +149,7 @@ async def open_pack(
     """
 
     if await service.get_by_id(profile_id=profile_id):
-        return await service.open_pack(profile_id)
+        return await service.open_pack(profile_id, amount_of_cards)
 
 
     raise HTTPException(status_code=404, detail="Profile not found")

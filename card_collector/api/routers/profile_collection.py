@@ -1,6 +1,5 @@
-"""A module containing continent endpoints."""
-
 from typing import List
+
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -16,14 +15,29 @@ router = APIRouter()
 @inject
 async def add_card_to_profile(
         profile_collection: ProfileCollectionIn,
+        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
         card_service: ICardService = Depends(Provide[Container.card_service]),
         profile_service: IProfileService = Depends(Provide[Container.profile_service]),
-        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> dict:
+    """
+    An endpoint for adding cards to profile, therefore making a profile collection.
+
+    Args:
+        profile_collection (ProfileCollectionIn): The profile_collection details.
+        service (IProfileCollectionService): The injected service dependency.
+        card_service (ICardService): The injected card service dependency.
+        profile_service (IProfileService): The injected profile service dependency.
+
+    Returns:
+        dict: The profile_collection details.
+
+    Raises:
+        HTTPException: 404 if data does not exist.
+    """
 
     if await card_service.get_by_id(profile_collection.card_id):
         if await profile_service.get_by_id(profile_collection.profile_id):
-            new_profile_collection = await service.add_card_to_profile_collection(profile_collection)
+            new_profile_collection = await service.add_profile_collection(profile_collection)
 
             return new_profile_collection.model_dump() if new_profile_collection else {}
 
@@ -36,42 +50,48 @@ async def add_card_to_profile(
 async def get_all_profile_collections(
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> List:
+    """
+    An endpoint for getting all profile collections.
 
+    Args:
+        service (IProfileCollectionService): The injected service dependency.
+
+    Returns:
+        List: The profile_collection details.
+    """
     profile_collections = await service.get_all()
 
     return profile_collections
 
 @router.get("/all_by_profile_id", response_model=List[ProfileCollection], status_code=200)
 @inject
-async def get_profile_collection_by_profile_id(
+async def get_all_profile_collections_by_profile_id(
         profile_id: int,
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
+        profile_service: IProfileService = Depends(Provide[Container.profile_service])
 ) -> List:
+    """
+    An endpoint for getting profile collections by profile id.
 
-    profile_collections = await service.get_profile_collection_by_profile_id(profile_id)
-    if profile_collections:
+    Args:
+        profile_id (int): The id of the profile.
+        service (IProfileCollectionService): The injected service dependency.
+        profile_service (IProfileService): The injected profile service dependency.
+
+    Returns:
+        List: The profile details.
+
+    Raises:
+        HTTPException: 404 if profile does not exist.
+    """
+
+    profile = await profile_service.get_by_id(profile_id)
+    profile_collections = await service.get_all_profile_collections_by_profile_id(profile_id)
+
+    if profile:
         return profile_collections
 
     raise HTTPException(status_code=404, detail="Profile not found")
-
-@router.get("/all_by_prof_and_card_id", response_model=List[ProfileCollection], status_code=200)
-@inject
-async def get_profile_collection_by_profile_id_and_card_id(
-        card_id: int,
-        profile_id: int,
-        card_service: ICardService = Depends(Provide[Container.card_service]),
-        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
-        profile_service: IProfileService = Depends(Provide[Container.profile_service]),
-) -> List:
-
-    if await card_service.get_by_id(card_id):
-        if await profile_service.get_by_id(profile_id):
-            profile_collections = await service.get_profile_collection_by_profile_id_and_card_id(card_id, profile_id)
-            return profile_collections
-        raise HTTPException(status_code=404, detail="Profile not found")
-    raise HTTPException(status_code=404, detail="Card not found")
-
-
 
 @router.get("/{profile_collection_id}",response_model=ProfileCollection,status_code=200,)
 @inject
@@ -79,14 +99,18 @@ async def get_profile_collection_by_id(
         profile_collection_id: int,
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> dict | None:
-    """An endpoint for getting profile_collection by id.
+    """
+    An endpoint for getting profile_collection by id.
 
     Args:
         profile_collection_id (int): The id of the profile_collection.
-        service (IProfileCollectionService, optional): The injected service dependency.
+        service (IProfileCollectionService): The injected service dependency.
 
     Returns:
         dict | None: The profile_collection details.
+
+    Raises:
+        HTTPException: 404 if profile does not exist.
     """
 
     if profile_collection := await service.get_by_id(profile_collection_id):
@@ -99,11 +123,27 @@ async def get_profile_collection_by_id(
 async def update_profile_collection(
         profile_collection_id: int,
         updated_profile_collection: ProfileCollectionIn,
+        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
         card_service: ICardService = Depends(Provide[Container.card_service]),
         profile_service: IProfileService = Depends(Provide[Container.profile_service]),
-        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
-) -> dict:
 
+) -> dict:
+    """
+    An endpoint for updating profile collection data.
+
+    Args:
+        profile_collection_id (int): The id of the profile_collection.
+        updated_profile_collection (ProfileCollectionIn): The updated profile collection details.
+        service (IProfileCollectionService): The injected service dependency.
+        card_service (ICardService): The injected card service dependency.
+        profile_service (IProfileService): The injected profile service dependency.
+
+    Returns:
+        dict: The profile_collection details.
+
+    Raises:
+        HTTPException: 404 if data does not exist.
+    """
     if await card_service.get_by_id(updated_profile_collection.card_id):
         if await profile_service.get_by_id(updated_profile_collection.profile_id):
             if await service.get_by_id(profile_collection_id=profile_collection_id):
@@ -124,7 +164,8 @@ async def delete_profile_collection(
         profile_collection_id: int,
         service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> None:
-    """An endpoint for deleting profile_collections.
+    """
+    An endpoint for deleting profile_collections.
 
     Args:
         profile_collection_id (int): The id of the profile_collection.

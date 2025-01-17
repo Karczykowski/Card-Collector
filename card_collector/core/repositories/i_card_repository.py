@@ -1,33 +1,34 @@
-"""Module containing card repository abstractions."""
-
 from abc import ABC, abstractmethod
 from typing import Any, List
 
 from card_collector.core.domains.card import CardIn
 
-
 class ICardRepository(ABC):
-    """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
     async def get_all_cards(self) -> List[Any]:
-        """The abstract getting all cards from the data storage.
+        """
+        The abstract class getting all cards from the database.
 
         Returns:
-            List[Any]: Cards in the data storage.
+            List[Any]: Cards in the database.
         """
 
     @abstractmethod
     async def get_all_by_rarity(self, rarity_id: int) -> List[Any]:
-        """The abstract getting all cards with a given rarity from the data storage.
+        """
+        The abstract class getting all cards with a given rarity from the database.
 
+        Args:
+            rarity_id (int): The id of the rarity.
         Returns:
-            List[Any]: Cards in the data storage.
+            List[Any]: Cards in the database.
         """
 
     @abstractmethod
     async def get_by_id(self, card_id: int) -> Any | None:
-        """The abstract getting card by provided id.
+        """
+        The abstract class getting card by given id.
 
         Args:
             card_id (int): The id of the card.
@@ -38,7 +39,8 @@ class ICardRepository(ABC):
 
     @abstractmethod
     async def add_card(self, data: CardIn) -> Any | None:
-        """The abstract adding new card to the data storage.
+        """
+        The abstract class adding new card to the database.
 
         Args:
             data (CardIn): The details of the new card.
@@ -53,7 +55,8 @@ class ICardRepository(ABC):
             card_id: int,
             data: CardIn,
     ) -> Any | None:
-        """The abstract updating card data in the data storage.
+        """
+        The abstract class updating card data in the database.
 
         Args:
             card_id (int): The id of the card.
@@ -65,7 +68,8 @@ class ICardRepository(ABC):
 
     @abstractmethod
     async def delete_card(self, card_id: int) -> bool:
-        """The abstract updating removing card from the data storage.
+        """
+        The abstract class removing card from the database.
 
         Args:
             card_id (int): The id of the card.

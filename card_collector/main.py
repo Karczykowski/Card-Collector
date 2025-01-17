@@ -1,15 +1,12 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
-
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.exception_handlers import http_exception_handler
+from fastapi import FastAPI
 
 from card_collector.api.routers.card import router as card_router
 from card_collector.api.routers.profile import router as profile_router
 from card_collector.api.routers.profile_collection import router as profile_collection_router
 from card_collector.api.routers.trade_offer import router as trade_offer_router
 from card_collector.api.routers.quest import router as quest_router
-
 from card_collector.container import Container
 from card_collector.db import database
 from card_collector.db import init_db
@@ -28,7 +25,6 @@ container.wire(modules=[
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator:
-    """Lifespan function working on app startup."""
     await init_db()
     await database.connect()
     await setup.main()

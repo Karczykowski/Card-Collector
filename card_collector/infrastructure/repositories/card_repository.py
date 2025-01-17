@@ -1,9 +1,6 @@
-"""Module containing card repository implementation."""
-
 from typing import Any, List
 
-from asyncpg import Record  # type: ignore
-from sqlalchemy import select, join
+from sqlalchemy import select
 
 from card_collector.core.repositories.i_card_repository import ICardRepository
 from card_collector.core.domains.card import Card, CardIn
@@ -13,13 +10,13 @@ from card_collector.db import (
 )
 
 class CardRepository(ICardRepository):
-    """A class representing continent DB repository."""
 
     async def get_all_cards(self) -> List[Any]:
-        """The method getting all cards from the data storage.
+        """
+        The method getting all cards from the database.
 
         Returns:
-            List[Any]: Cards in the data storage.
+            List[Any]: Cards in the database.
         """
 
         query = (
@@ -31,15 +28,16 @@ class CardRepository(ICardRepository):
         return [Card.from_record(card) for card in cards]
 
     async def get_all_by_rarity(self, _rarity_id: int) -> List[Any]:
-        """The method getting all cards from the data storage.
+        """
+        The method getting all cards with a given rarity from the database.
 
         Returns:
-            List[Any]: Cards in the data storage.
+            List[Any]: Cards in the database.
         """
 
         query = (
             select(card_table)
-            .where(card_table.c.rarity_id == _rarity_id)
+            .where(card_table.c.rarity_id == _rarity_id) # type: ignore
             .order_by(card_table.c.name.asc())
         )
         cards = await database.fetch_all(query)
@@ -48,7 +46,8 @@ class CardRepository(ICardRepository):
 
 
     async def get_by_id(self, card_id: int) -> Any | None:
-        """The method getting card by provided id.
+        """
+        The method getting card with a given id.
 
         Args:
             card_id (int): The id of the card.
@@ -56,19 +55,22 @@ class CardRepository(ICardRepository):
         Returns:
             Any | None: The card details.
         """
+        query = (
+            card_table.select()
+            .where(card_table.c.id == card_id)
+            .order_by(card_table.c.name.asc())
+        )
 
-        card = await self._get_by_id(card_id)
+        card = await database.fetch_one(query)
 
         return Card.from_record(card) if card else None
 
     async def add_card(self, data: CardIn) -> Any | None:
-        """The method adding new card to the data storage.
+        """
+        The method adding new card to the database.
 
         Args:
             data (CardIn): The details of the new card.
-
-        Returns:
-            Card: Full details of the newly added card.
 
         Returns:
             Any | None: The newly added card.
@@ -76,7 +78,7 @@ class CardRepository(ICardRepository):
 
         query = card_table.insert().values(**data.model_dump())
         new_card_id = await database.execute(query)
-        new_card = await self._get_by_id(new_card_id)
+        new_card = await self.get_by_id(new_card_id)
 
         return Card(**dict(new_card)) if new_card else None
 
@@ -85,7 +87,8 @@ class CardRepository(ICardRepository):
             card_id: int,
             data: CardIn,
     ) -> Any | None:
-        """The method updating card data in the data storage.
+        """
+        The method updating card data in the database.
 
         Args:
             card_id (int): The id of the card.
@@ -95,7 +98,7 @@ class CardRepository(ICardRepository):
             Any | None: The updated card details.
         """
 
-        if self._get_by_id(card_id):
+        if self.get_by_id(card_id):
             query = (
                 card_table.update()
                 .where(card_table.c.id == card_id)
@@ -103,14 +106,15 @@ class CardRepository(ICardRepository):
             )
             await database.execute(query)
 
-            card = await self._get_by_id(card_id)
+            card = await self.get_by_id(card_id)
 
             return Card(**dict(card)) if card else None
 
         return None
 
     async def delete_card(self, card_id: int) -> bool:
-        """The method updating removing card from the data storage.
+        """
+        The method removing card from the database.
 
         Args:
             card_id (int): The id of the card.
@@ -119,7 +123,7 @@ class CardRepository(ICardRepository):
             bool: Success of the operation.
         """
 
-        if await self._get_by_id(card_id):
+        if await self.get_by_id(card_id):
             query = card_table \
                 .delete() \
                 .where(card_table.c.id == card_id)
@@ -128,21 +132,3 @@ class CardRepository(ICardRepository):
             return True
 
         return False
-
-    async def _get_by_id(self, card_id: int) -> Record | None:
-        """A private method getting card from the DB based on its ID.
-
-        Args:
-            card_id (int): The ID of the card.
-
-        Returns:
-            Any | None: Card record if exists.
-        """
-
-        query = (
-            card_table.select()
-            .where(card_table.c.id == card_id)
-            .order_by(card_table.c.name.asc())
-        )
-
-        return await database.fetch_one(query)

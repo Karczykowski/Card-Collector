@@ -1,41 +1,48 @@
-"""Module containing quest repository abstractions."""
-
 from abc import ABC, abstractmethod
 from typing import Any, List
 
 from card_collector.core.domains.quest import QuestIn
 
-
 class IQuestRepository(ABC):
-    """An abstract class representing protocol of continent repository."""
 
     @abstractmethod
     async def get_all_quests(self) -> List[Any]:
-        """The abstract getting all quests from the data storage.
+        """
+        The abstract class getting all quests from the database.
 
         Returns:
-            List[Any]: Quests in the data storage.
+            List[Any]: Quests in the database.
+.
         """
 
     @abstractmethod
     async def get_all_by_profile(self, profile_id: int) -> List[Any]:
-        """The method getting all quests from the repository.
+        """
+        The abstract class getting all quests by a given profile id from the repository.
+
+        Args:
+            profile_id (int): The id of the profile.
 
         Returns:
-            List[Quest]: All quests.
+            List[Any]: Quests in the database.
         """
 
     @abstractmethod
     async def get_all_by_reward(self, reward_id: int) -> List[Any]:
-        """The method getting all quests from the repository.
+        """
+        The abstract class getting all quests by a given reward id from the repository.
+
+        Args:
+            reward_id (int): The id of the reward.
 
         Returns:
-            List[Quest]: All quests.
+            List[Any]: Quests in the database.
         """
 
     @abstractmethod
     async def get_by_id(self, quest_id: int) -> Any | None:
-        """The abstract getting quest by provided id.
+        """
+        The abstract class getting quest by a given id.
 
         Args:
             quest_id (int): The id of the quest.
@@ -46,7 +53,8 @@ class IQuestRepository(ABC):
 
     @abstractmethod
     async def add_quest(self, data: QuestIn) -> Any | None:
-        """The abstract adding new quest to the data storage.
+        """
+        The abstract class adding new quest to the database.
 
         Args:
             data (QuestIn): The details of the new quest.
@@ -61,7 +69,8 @@ class IQuestRepository(ABC):
             quest_id: int,
             data: QuestIn,
     ) -> Any | None:
-        """The abstract updating quest data in the data storage.
+        """
+        The abstract class updating quest data in the database.
 
         Args:
             quest_id (int): The id of the quest.
@@ -73,18 +82,8 @@ class IQuestRepository(ABC):
 
     @abstractmethod
     async def delete_quest(self, quest_id: int) -> bool:
-        """The abstract updating removing quest from the data storage.
-
-        Args:
-            quest_id (int): The id of the quest.
-
-        Returns:
-            bool: Success of the operation.
         """
-
-    @abstractmethod
-    async def update_cards_collected(self, quest_id: int) -> Any | None:
-        """Abstract method for updating quest progress
+        The abstract class removing quest from the database.
 
         Args:
             quest_id (int): The id of the quest.

@@ -1,15 +1,10 @@
-"""Module containing card-related domain models"""
-
-from typing import Optional
 from asyncpg import Record
 from pydantic import BaseModel, ConfigDict
 
-
 class CardIn(BaseModel):
-    """Model representing card's DTO attributes."""
+    """Model representing card's attributes."""
     name: str
     rarity_id: int
-
 
 class Card(CardIn):
     """Model representing card's attributes in the database."""
@@ -19,18 +14,19 @@ class Card(CardIn):
 
     @classmethod
     def from_record(cls, record: Record) -> "Card":
-        """A method for preparing DTO instance based on DB record.
+        """
+        A method for preparing instance based on DB record.
 
         Args:
             record (Record): The DB record.
 
         Returns:
-            CardDTO: The final DTO instance.
+            Card: The final Card instance.
         """
         record_dict = dict(record)
 
         return cls(
-            id=record_dict.get("id"),  # type: ignore
-            name=record_dict.get("name"),  # type: ignore
-            rarity_id=record_dict.get("rarity_id"), # type: ignore
+            id=record_dict.get("id"),
+            name=record_dict.get("name"),
+            rarity_id=record_dict.get("rarity_id"),
         )

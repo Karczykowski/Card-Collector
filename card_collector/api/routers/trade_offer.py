@@ -1,6 +1,5 @@
-"""A module containing continent endpoints."""
-
 from typing import List
+
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -14,32 +13,37 @@ from card_collector.core.services.i_collection_integration_service import IColle
 
 router = APIRouter()
 
-
 @router.post("/create", response_model=TradeOffer, status_code=201)
 @inject
 async def create_trade_offer(
         trade_offer: TradeOfferIn,
-        service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
         profile_service: IProfileService = Depends(Provide[Container.profile_service]),
         card_service: ICardService = Depends(Provide[Container.card_service]),
         profile_collection_service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
         collection_integration_service: ICollectionIntegrationService = Depends(Provide[Container.collection_integration_service])
 ) -> dict:
-    """An endpoint for adding new trade_offer.
+    """
+    An endpoint for adding new trade offer.
 
     Args:
         trade_offer (TradeOfferIn): The trade_offer data.
-        service (ITradeOfferService, optional): The injected service dependency.
-        profile_service: The injected profile_service.
-        card_service: The Injected card_service.
-        profile_collection_service: The injected profile_collection
+        profile_service: The injected profile service dependency.
+        card_service: The Injected card service dependency.
+        profile_collection_service: The injected profile collection dependency.
+        collection_integration_service (ICollectionIntegrationService): The injected collection integration service.
 
     Returns:
-        dict: The new trade_offer attributes.
+        dict: The new trade offer attributes.
+
+    Raises:
+        HTTPException: 404 if data does not exist.
     """
+
     if await profile_service.get_by_id(trade_offer.profile_posted):
         if await card_service.get_by_id(trade_offer.card_wanted):
-            if await profile_collection_service.get_profile_collection_by_profile_id_and_card_id(trade_offer.card_offered, trade_offer.profile_posted):
+            if await profile_collection_service.get_all_profile_collections_by_profile_id_and_card_id(
+                    trade_offer.card_offered,
+                    trade_offer.profile_posted):
 
                 new_trade_offer = await collection_integration_service.add_trade_offer(trade_offer)
                 return new_trade_offer.model_dump() if new_trade_offer else {}
@@ -55,10 +59,11 @@ async def create_trade_offer(
 async def get_all_trade_offers(
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
 ) -> List:
-    """An endpoint for getting all trade_offers.
+    """
+    An endpoint for getting all trade offers.
 
     Args:
-        service (ITradeOfferService, optional): The injected service dependency.
+        service (ITradeOfferService): The injected service dependency.
 
     Returns:
         List: The trade_offer attributes collection.
@@ -74,14 +79,18 @@ async def get_trade_offer_by_id(
         trade_offer_id: int,
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
 ) -> dict | None:
-    """An endpoint for getting trade_offer by id.
+    """
+    An endpoint for getting trade_offer by id.
 
     Args:
         trade_offer_id (int): The id of the trade_offer.
-        service (ITradeOfferService, optional): The injected service dependency.
+        service (ITradeOfferService): The injected service dependency.
 
     Returns:
         dict | None: The trade_offer details.
+
+    Raises:
+        HTTPException: 404 if trade offer does not exist.
     """
 
     if trade_offer := await service.get_by_id(trade_offer_id):
@@ -99,23 +108,29 @@ async def update_trade_offer(
         card_service: ICardService = Depends(Provide[Container.card_service]),
         profile_collection_service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
 ) -> dict:
-    """An endpoint for updating trade_offer data.
+    """
+    An endpoint for updating trade offer.
 
     Args:
         trade_offer_id (int): The id of the trade_offer.
-        updated_trade_offer (TradeOfferIn): The updated trade_offer details.
-        service (ITradeOffertService, optional): The injected service dependency.
-
-    Raises:
-        HTTPException: 404 if trade_offer does not exist.
+        updated_trade_offer (TradeOfferIn): The updated trade offer details.
+        service (ITradeOfferService): The injected service dependency.
+        profile_service (IProfileService): The injected profile service dependency.
+        card_service (ICardService): The injected card service dependency.
+        profile_collection_service (IProfileCollectionService): The injected profile collection dependency.
 
     Returns:
-        dict: The updated trade_offer details.
+        dict: The updated trade offer details.
+
+    Raises:
+        HTTPException: 404 if data does not exist.
     """
 
     if await service.get_by_id(trade_offer_id=trade_offer_id):
         if await profile_service.get_by_id(updated_trade_offer.profile_posted):
-            if await profile_collection_service.get_profile_collection_by_profile_id_and_card_id(updated_trade_offer.card_offered, updated_trade_offer.profile_posted):
+            if await profile_collection_service.get_all_profile_collections_by_profile_id_and_card_id(
+                    updated_trade_offer.card_offered,
+                    updated_trade_offer.profile_posted):
                 if await card_service.get_by_id(updated_trade_offer.card_wanted):
                     await service.update_trade_offer(
                         trade_offer_id=trade_offer_id,
@@ -134,14 +149,15 @@ async def delete_trade_offer(
         trade_offer_id: int,
         service: ITradeOfferService = Depends(Provide[Container.trade_offer_service]),
 ) -> None:
-    """An endpoint for deleting trade_offers.
+    """
+    An endpoint for deleting trade offers.
 
     Args:
         trade_offer_id (int): The id of the trade_offer.
-        service (ITradeOfferService, optional): The injected service dependency.
+        service (ITradeOfferService): The injected service dependency.
 
     Raises:
-        HTTPException: 404 if trade_offer does not exist.
+        HTTPException: 404 if trade offer does not exist.
     """
 
     if await service.get_by_id(trade_offer_id=trade_offer_id):

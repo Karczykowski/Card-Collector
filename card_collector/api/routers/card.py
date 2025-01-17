@@ -1,6 +1,5 @@
-"""A module containing continent endpoints."""
-
 from typing import List
+
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -12,7 +11,6 @@ from card_collector.core.services.i_trade_offer_service import ITradeOfferServic
 from card_collector.core.services.i_profile_collection_service import IProfileCollectionService
 
 router = APIRouter()
-
 
 @router.post("/create", response_model=Card, status_code=201)
 @inject
@@ -155,7 +153,7 @@ async def delete_card(
 
     Raises:
         HTTPException: 404 if card does not exist.
-        HTTPException: 409 if can't delete card.
+        HTTPException: 409 if can not delete card.
     """
 
     if await service.get_by_id(card_id=card_id):

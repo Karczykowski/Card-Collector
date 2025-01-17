@@ -1,19 +1,16 @@
-"""Module containing continent service implementation."""
-import random
 from typing import List
 
 from card_collector.core.domains.quest import Quest, QuestIn
 from card_collector.core.repositories.i_quest_repository import IQuestRepository
 from card_collector.core.services.i_quest_service import IQuestService
 
-
 class QuestService(IQuestService):
-    """A class implementing the quest service."""
 
     _repository: IQuestRepository
 
     def __init__(self, repository: IQuestRepository) -> None:
-        """The initializer of the `quest service`.
+        """
+        The initializer of the quest service.
 
         Args:
             repository (IQuestRepository): The reference to the repository.
@@ -21,7 +18,8 @@ class QuestService(IQuestService):
         self._repository = repository
 
     async def get_all(self) -> List[Quest]:
-        """The method getting all quests from the repository.
+        """
+        The method getting all quests from the repository.
 
         Returns:
             List[Quest]: All quests.
@@ -30,25 +28,28 @@ class QuestService(IQuestService):
         return await self._repository.get_all_quests()
 
     async def get_all_by_profile(self, profile_id: int) -> List[Quest]:
-        """The method getting all quests from the repository.
+        """
+        The method getting all quests with a given profile id from the repository.
 
         Returns:
-            List[Quest]: All quests.
+            List[Quest]: Quests.
         """
 
         return await self._repository.get_all_by_profile(profile_id)
 
     async def get_all_by_reward(self, reward_id: int) -> List[Quest]:
-        """The method getting all quests from the repository.
+        """
+        The method getting all quests with a given reward id from the repository.
 
         Returns:
-            List[Quest]: All quests.
+            List[Quest]: Quests.
         """
 
         return await self._repository.get_all_by_reward(reward_id)
 
     async def get_by_id(self, quest_id: int) -> Quest | None:
-        """The method getting quest by provided id.
+        """
+        The method getting quest with a given id.
 
         Args:
             quest_id (int): The id of the quest.
@@ -60,13 +61,14 @@ class QuestService(IQuestService):
         return await self._repository.get_by_id(quest_id)
 
     async def add_quest(self, data: QuestIn) -> Quest | None:
-        """The method adding new quest to the data storage.
+        """
+        The method adding new quest to the database.
 
         Args:
             data (QuestIn): The details of the new quest.
 
         Returns:
-            Quest | None: Full details of the newly added quest.
+            Quest | None: Details of the newly added quest.
         """
 
         return await self._repository.add_quest(data)
@@ -76,7 +78,8 @@ class QuestService(IQuestService):
             quest_id: int,
             data: QuestIn,
     ) -> Quest | None:
-        """The method updating quest data in the data storage.
+        """
+        The method updating quest data in the database.
 
         Args:
             quest_id (int): The id of the quest.
@@ -91,18 +94,9 @@ class QuestService(IQuestService):
             data=data,
         )
 
-    async def complete_quest(self, quest_id: int) -> bool:
-        """The method for completing quest
-
-        Args:
-            quest_id (int): The id of the quest.
-
-        Returns:
-            bool: Success of the operation.
-        """
-
     async def delete_quest(self, quest_id: int) -> bool:
-        """The method updating removing quest from the data storage.
+        """
+        The method removing quest from the database.
 
         Args:
             quest_id (int): The id of the quest.
