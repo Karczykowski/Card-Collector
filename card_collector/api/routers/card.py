@@ -27,11 +27,16 @@ async def create_card(
 
     Returns:
         dict: The new card attributes.
+
+    Raises:
+        HTTPException: 409 if card already exists.
     """
+    if not await service.get_by_name(card.name):
+        new_card = await service.add_card(card)
 
-    new_card = await service.add_card(card)
+        return new_card.model_dump() if new_card else {}
+    raise HTTPException(status_code=409, detail="Card with this name already exists")
 
-    return new_card.model_dump() if new_card else {}
 
 @router.get("/all", response_model=List[Card], status_code=200)
 @inject

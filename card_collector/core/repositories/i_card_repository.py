@@ -1,3 +1,4 @@
+import string
 from abc import ABC, abstractmethod
 from typing import Any, List
 
@@ -32,6 +33,18 @@ class ICardRepository(ABC):
 
         Args:
             card_id (int): The id of the card.
+
+        Returns:
+            Any | None: The card details.
+        """
+
+    @abstractmethod
+    async def get_by_name(self, name: string) -> Any | None:
+        """
+        The abstract class getting card by given name.
+
+        Args:
+            name (string): The name of the card.
 
         Returns:
             Any | None: The card details.

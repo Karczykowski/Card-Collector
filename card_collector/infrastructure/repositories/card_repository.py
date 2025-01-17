@@ -1,3 +1,4 @@
+import string
 from typing import Any, List
 
 from sqlalchemy import select
@@ -21,7 +22,6 @@ class CardRepository(ICardRepository):
 
         query = (
             select(card_table)
-            .order_by(card_table.c.name.asc())
         )
         cards = await database.fetch_all(query)
 
@@ -38,7 +38,6 @@ class CardRepository(ICardRepository):
         query = (
             select(card_table)
             .where(card_table.c.rarity_id == _rarity_id) # type: ignore
-            .order_by(card_table.c.name.asc())
         )
         cards = await database.fetch_all(query)
 
@@ -58,7 +57,25 @@ class CardRepository(ICardRepository):
         query = (
             card_table.select()
             .where(card_table.c.id == card_id)
-            .order_by(card_table.c.name.asc())
+        )
+
+        card = await database.fetch_one(query)
+
+        return Card.from_record(card) if card else None
+
+    async def get_by_name(self, name: string) -> Any | None:
+        """
+        The method getting card with a given name.
+
+        Args:
+            name (string): The name of the card.
+
+        Returns:
+            Any | None: The card details.
+        """
+        query = (
+            card_table.select()
+            .where(card_table.c.name == name)
         )
 
         card = await database.fetch_one(query)

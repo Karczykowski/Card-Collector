@@ -1,9 +1,6 @@
-"""Module providing containers injecting dependencies."""
-
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Singleton
 
-from card_collector.db import profile_collection_table, trade_offer_table
 from card_collector.infrastructure.repositories.card_repository import CardRepository
 from card_collector.infrastructure.services.card_service import CardService
 
@@ -22,7 +19,6 @@ from card_collector.infrastructure.services.quest_service import QuestService
 from card_collector.infrastructure.services.collection_integration_service import CollectionIntegrationService
 
 class Container(DeclarativeContainer):
-    """Container class for dependency injecting purposes."""
     card_repository = Singleton(CardRepository)
     profile_repository = Singleton(ProfileRepository)
     profile_collection_repository = Singleton(ProfileCollectionRepository)
@@ -65,10 +61,3 @@ class Container(DeclarativeContainer):
         profile_collection_service=profile_collection_service,
         quest_service=quest_service
     )
-
-
-
-
-
-
-

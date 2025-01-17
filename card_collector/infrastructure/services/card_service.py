@@ -1,4 +1,5 @@
 import random
+import string
 from typing import List
 
 from card_collector.core.domains.card import Card, CardIn
@@ -54,6 +55,19 @@ class CardService(ICardService):
         """
 
         return await self._repository.get_by_id(card_id)
+
+    async def get_by_name(self, name: string) -> Card | None:
+        """
+        The method getting card with a name.
+
+        Args:
+            name (string): The name of the card.
+
+        Returns:
+            Card | None: The card details.
+        """
+
+        return await self._repository.get_by_name(name)
 
     async def get_random_cards_by_rarity(self, amount: int, rarity_id: int) -> List[Card]:
         """

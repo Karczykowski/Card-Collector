@@ -118,46 +118,6 @@ async def get_profile_collection_by_id(
 
     raise HTTPException(status_code=404, detail="Profile Collection not found")
 
-@router.put("/{profile_collection_id}", response_model=ProfileCollection, status_code=201)
-@inject
-async def update_profile_collection(
-        profile_collection_id: int,
-        updated_profile_collection: ProfileCollectionIn,
-        service: IProfileCollectionService = Depends(Provide[Container.profile_collection_service]),
-        card_service: ICardService = Depends(Provide[Container.card_service]),
-        profile_service: IProfileService = Depends(Provide[Container.profile_service]),
-
-) -> dict:
-    """
-    An endpoint for updating profile collection data.
-
-    Args:
-        profile_collection_id (int): The id of the profile_collection.
-        updated_profile_collection (ProfileCollectionIn): The updated profile collection details.
-        service (IProfileCollectionService): The injected service dependency.
-        card_service (ICardService): The injected card service dependency.
-        profile_service (IProfileService): The injected profile service dependency.
-
-    Returns:
-        dict: The profile_collection details.
-
-    Raises:
-        HTTPException: 404 if data does not exist.
-    """
-    if await card_service.get_by_id(updated_profile_collection.card_id):
-        if await profile_service.get_by_id(updated_profile_collection.profile_id):
-            if await service.get_by_id(profile_collection_id=profile_collection_id):
-                await service.update_profile_collection(
-                    profile_collection_id=profile_collection_id,
-                    data=updated_profile_collection,
-                )
-                return {**updated_profile_collection.model_dump(), "id": profile_collection_id}
-
-            raise HTTPException(status_code=404, detail="Profile Collection not found")
-        raise HTTPException(status_code=404, detail="Profile not found")
-    raise HTTPException(status_code=404, detail="Card not found")
-
-
 @router.delete("/{profile_collection_id}", status_code=204)
 @inject
 async def delete_profile_collection(

@@ -1,3 +1,4 @@
+import string
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -28,10 +29,22 @@ class ICardService(ABC):
     @abstractmethod
     async def get_by_id(self, card_id: int) -> Card | None:
         """
-        The method getting card by given id.
+        The method getting card with a given id.
 
         Args:
             card_id (int): The id of the card.
+
+        Returns:
+            Card | None: The card details.
+        """
+
+    @abstractmethod
+    async def get_by_name(self, name: string) -> Card | None:
+        """
+        The method getting card with a given name.
+
+        Args:
+            name (string): The name of the card.
 
         Returns:
             Card | None: The card details.

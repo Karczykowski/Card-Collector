@@ -21,7 +21,6 @@ class ProfileRepository(IProfileRepository):
 
         query = (
             select(profile_table)
-            .order_by(profile_table.c.name.asc())
         )
         profiles = await database.fetch_all(query)
 
@@ -40,7 +39,6 @@ class ProfileRepository(IProfileRepository):
         query = (
             profile_table.select()
             .where(profile_table.c.id == profile_id)
-            .order_by(profile_table.c.name.asc())
         )
 
         profile = await database.fetch_one(query)
